@@ -1,0 +1,4 @@
+1: Need to make a linkedlist. with necessary variables.
+2: Add add, search, delete methods in the linkedlist.
+3: complete the implematation of the functions in regions.h.
+4: testing the functions with different input.
