@@ -14,6 +14,7 @@ struct NODE
 }
 
 static Node *top = NULL;
+static Node *traverseNode = NULL;
 
 Boolean insert(const char *region_name, r_size_t region_size)
 {
@@ -43,4 +44,47 @@ Boolean insert(const char *region_name, r_size_t region_size)
         }
     }
     return rc;
+}
+Boolean search( char const * const target )
+{
+  Boolean found = false;
+  Node *curr = top;
+  
+  while ( curr != NULL && !found )
+  {
+    if ( strcmp( target, curr->string ) == 0 )
+    {
+      found = true;
+    }
+    
+    else
+    {
+      curr = curr->next;
+    }
+  }
+  
+  return found;
+}
+// starts a list traversal by getting the data at top
+char * firstItem()
+{
+  traverseNode = top->next;
+  
+  return top->string;
+}
+
+
+// gets the data at the current traversal node and increments the traversal
+char * nextItem()
+{
+  char *item = NULL;
+  
+  // no need to go past the end of the list...
+  if ( traverseNode != NULL )
+  {
+    item = traverseNode->string;
+    traverseNode = traverseNode->next;
+  }
+  
+  return item;
 }
