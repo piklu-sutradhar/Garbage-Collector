@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
-
+#include <assert.h>
+#include "linkedlist.h"
 
 static Node *top = NULL;
 static Node *traverseNode = NULL;
@@ -20,7 +20,8 @@ Boolean insert(const char *region_name, r_size_t region_size)
         newNode->next = top;
         top = newNode;
         newNode->name = (char *)malloc(strlen(region_name) + 1);
-        assert(newNode->name != NULL) if (newNode->name != NULL)
+        assert(newNode->name != NULL);
+        if (newNode->name != NULL)
         {
             strcpy(newNode->name, region_name);
             assert(strcmp(newNode->name, region_name) == 0);
@@ -35,46 +36,76 @@ Boolean insert(const char *region_name, r_size_t region_size)
     }
     return rc;
 }
-Boolean search( char const * const target )
+Boolean search(char const *const target)
 {
-  Boolean found = false;
-  Node *curr = top;
-  
-  while ( curr != NULL && !found )
-  {
-    if ( strcmp( target, curr->string ) == 0 )
+    Boolean found = false;
+    Node *curr = top;
+
+    while (curr != NULL && !found)
     {
-      found = true;
+        if (strcmp(target, curr->name) == 0)
+        {
+            found = true;
+        }
+
+        else
+        {
+            curr = curr->next;
+        }
     }
-    
-    else
-    {
-      curr = curr->next;
-    }
-  }
-  
-  return found;
+
+    return found;
 }
 // starts a list traversal by getting the data at top
-Node * firstNode()
+Node *firstNode()
 {
-  traverseNode = top->next;
-  
-  return top;
+    if (top != NULL)
+    {
+        traverseNode = top->next;
+    }
+    return top;
 }
 
-
 // gets the data at the current traversal node and increments the traversal
-Node * nextNode()
+Node *nextNode()
 {
-  //char *item = NULL;
+    //char *item = NULL;
+    Node *current = NULL;
+    // no need to go past the end of the list...
+    if (traverseNode != NULL)
+    {
+        current = traverseNode;
+        //item = traverseNode->string;
+        traverseNode = traverseNode->next;
+    }
+
+    return current;
+}
+Boolean delete( char const * const target )
+{
+  Boolean deleted = false;
+  Node *curr = top;
+  Node *prev = NULL;
   
-  // no need to go past the end of the list...
-  if ( traverseNode != NULL )
+  while ( curr != NULL && strcmp( target, curr->name ) != 0 )
   {
-    //item = traverseNode->string;
-    traverseNode = traverseNode->next;
+    prev = curr;
+    curr = curr->next;
+  }
+
+  if ( curr != NULL )
+  {
+    if ( prev != NULL )
+      prev->next = curr->next;
+    else
+      top = curr->next;
+    
+    free( curr->name );
+    free( curr->memoryRegion);
+    free( curr );
+    deleted = true;
+    //numNodes--;
   }
   
-  return traverseNode;
+  return deleted;
 }
