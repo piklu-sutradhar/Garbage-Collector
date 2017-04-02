@@ -3,15 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef struct NODE Node;
 
-struct NODE
-{
-    char *name;
-    r_size_t size;
-    void *memoryRegion;
-    Node *next;
-}
 
 static Node *top = NULL;
 static Node *traverseNode = NULL;
@@ -32,8 +24,6 @@ Boolean insert(const char *region_name, r_size_t region_size)
         {
             strcpy(newNode->name, region_name);
             assert(strcmp(newNode->name, region_name) == 0);
-            region_size += 7;
-            region_size = region_size - (region_size % 8);
             newNode->memoryRegion = malloc(region_size);
             if (newNode->memoryRegion == NULL)
             {
@@ -66,25 +56,25 @@ Boolean search( char const * const target )
   return found;
 }
 // starts a list traversal by getting the data at top
-char * firstItem()
+Node * firstNode()
 {
   traverseNode = top->next;
   
-  return top->string;
+  return top;
 }
 
 
 // gets the data at the current traversal node and increments the traversal
-char * nextItem()
+Node * nextNode()
 {
-  char *item = NULL;
+  //char *item = NULL;
   
   // no need to go past the end of the list...
   if ( traverseNode != NULL )
   {
-    item = traverseNode->string;
+    //item = traverseNode->string;
     traverseNode = traverseNode->next;
   }
   
-  return item;
+  return traverseNode;
 }

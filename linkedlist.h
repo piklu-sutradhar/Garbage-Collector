@@ -9,5 +9,5 @@ struct NODE
 }
 Boolean insert(const char *region_name, r_size_t region_size);
 Boolean search( char const * const target );
-char * firstItem();
-char * nextItem();
+Node * firstItem();
+Node * nextItem();
