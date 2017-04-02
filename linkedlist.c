@@ -34,14 +34,7 @@ Boolean insert(const char *region_name, r_size_t region_size)
             region_size += 7;
             region_size = region_size - (region_size % 8);
             newNode->memoryRegion = malloc(region_size);
-            if (newNode->memoryRegion != NULL)
-            {
-                for(int i = 0; i<region_size; i++)
-                {
-                    
-                }
-            }
-            else
+            if (newNode->memoryRegion == NULL)
             {
                 free(newNode->name);
                 free(newNode);
