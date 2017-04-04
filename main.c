@@ -8,39 +8,50 @@
 // you must think of additional cases of correct use and misuse for your testing
 int main(void)
 {
-  Boolean rc;
- // int *ia;
-  //char *ca1, *ca2, *ca3, *ca4;
-  //char *fail;
-  //printf("here I am");
-  rc = rinit("hello", 1024);
-  assert(rc);
-  
-  rc = rinit("world", 798); // 800
-  assert(rc);
+    Boolean rc;
+    // int *ia;
+    //char *ca1, *ca2, *ca3, *ca4;
+    //char *fail;
+    //printf("here I am");
+    rc = rinit("hello", 1024);
+    assert(rc);
 
-  // world
+    rc = rinit("world", 798); // 800
+    assert(rc);
 
-  rc = rinit("This", 566); // 800
-  assert(rc);
+    // world
 
-  rc = rinit("new", 958); // 800
-  assert(rc);
+    rc = rinit("This", 566); // 800
+    assert(rc);
 
-   printf("Chosen: %s\n", rchosen()); //new
+    rc = rinit("new", 958); // 800
+    assert(rc);
 
-   rc = rchoose("world");
+    printf("Chosen: %s\n", rchosen()); //new
+
+    rc = rchoose("world");
 
     printf("Chosen: %s\n", rchosen()); // world
 
     rdestroy("This");
     rc = rchoose("This");
 
-printf("Chosen: %s\n", rchosen());
+    printf("Chosen: %s\n", rchosen());
 
-rc = rinit("This", 1000);
-printf("Chosen: %s\n", rchosen()); // This
-  /*
+    rc = rinit("This", 1000);
+    printf("Chosen: %s\n", rchosen()); // This
+
+    rc = rchoose("hello");
+    printf("Chosen: %s\n", rchosen()); //hello
+
+    rc = rinit("world", 1056);
+     printf("Chosen: %s\n", rchosen()); //null
+     rc = rchoose("This");
+
+    printf("Chosen: %s\n", rchosen()); 
+
+    rdump();
+    /*
   rc = rchoose("hello");
   assert(rc);
   ia = ralloc(sizeof(int) * 32);
@@ -81,5 +92,5 @@ printf("Chosen: %s\n", rchosen()); // This
 
   fprintf(stderr,"\nEnd of processing.\n");*/
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

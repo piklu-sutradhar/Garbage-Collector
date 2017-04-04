@@ -7,6 +7,7 @@
 
 static Node *top = NULL;
 static Node *traverseNode = NULL;
+static Tracker *traverseMemory = NULL;
 
 Boolean insert(const char *region_name, r_size_t region_size)
 {
@@ -25,8 +26,16 @@ Boolean insert(const char *region_name, r_size_t region_size)
         {
             strcpy(newNode->name, region_name);
             assert(strcmp(newNode->name, region_name) == 0);
+            newNode->size = region_size;
             newNode->memoryRegion = malloc(region_size);
-            if (newNode->memoryRegion == NULL)
+            if (newNode->memoryRegion != NULL){
+                int i;
+                for(i = 0; i < region_size; i++){
+                    *(((char *)newNode->memoryRegion) + i) = '0';
+                }
+                newNode->metaData = 
+            }
+            else
             {
                 free(newNode->name);
                 free(newNode);
