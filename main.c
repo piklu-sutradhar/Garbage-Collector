@@ -9,8 +9,8 @@
 int main(void)
 {
     Boolean rc;
-    // int *ia;
-    //char *ca1, *ca2, *ca3, *ca4;
+     int *ia;
+    //char *ca1; *ca2, *ca3, *ca4;
     //char *fail;
     //printf("here I am");
     rc = rinit("hello", 1024);
@@ -50,7 +50,29 @@ int main(void)
 
     printf("Chosen: %s\n", rchosen()); 
 
-    rdump();
+    ia = ralloc(sizeof(int) * 32);
+    printf("Chosen: %p\n", ia);
+
+    ia = ralloc(sizeof(int) * 32);
+    printf("Chosen: %p\n", ia);
+
+    rc = rchoose("hello");
+
+    printf("Chosen: %s\n", rchosen()); 
+
+    ia = ralloc(sizeof(int) * 32);
+    printf("Chosen: %p\n", ia);
+
+    ia = ralloc(sizeof(int) * 32);
+    printf("Chosen: %p\n", ia);
+
+    ia = ralloc(sizeof(int) * 32);
+    printf("Chosen: %p\n", ia);
+
+    ia = ralloc(sizeof(int) * 32);
+    printf("Chosen: %p\n", ia);
+
+    //rdump();
     /*
   rc = rchoose("hello");
   assert(rc);

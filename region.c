@@ -69,11 +69,18 @@ const char *rchosen()
     }
     return name;
 }
-/*
 void *ralloc(r_size_t block_size)
 {
-    S
+    //printf("choosen buffer: %p\n", curr->metaData);
+    void *start_of_block = NULL;
+    if(createBlock(curr, block_size) == true)
+    {
+        start_of_block = currPointer();
+    }
+    //printf("%p\n", start_of_block);
+    return start_of_block;
 }
+/*
 r_size_t rsize(void *block_ptr)
 {
 }

@@ -1,16 +1,8 @@
-typedef enum { false,
-               true } Boolean;
+#include "tracker.h"
 
-typedef unsigned short r_size_t;
-typedef struct TRACKER Tracker;
+
 typedef struct NODE Node;
-struct TRACKER
-{
-    void *start_of_block;
-    //void *end_of_block;
-    r_size_t size;
-    Tracker *next;
-};
+
 
 struct NODE
 {
@@ -26,3 +18,5 @@ Boolean search(char const *const target);
 Node *firstNode();
 Node *nextNode();
 Boolean delete (char const *const target);
+Boolean createBlock(Node *init, r_size_t block_size);
+void *currPointer();

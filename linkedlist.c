@@ -7,7 +7,7 @@
 
 static Node *top = NULL;
 static Node *traverseNode = NULL;
-static Tracker *traverseMemory = NULL;
+static Tracker *current = NULL;
 
 Boolean insert(const char *region_name, r_size_t region_size)
 {
@@ -28,12 +28,14 @@ Boolean insert(const char *region_name, r_size_t region_size)
             assert(strcmp(newNode->name, region_name) == 0);
             newNode->size = region_size;
             newNode->memoryRegion = malloc(region_size);
-            if (newNode->memoryRegion != NULL){
+            if (newNode->memoryRegion != NULL)
+            {
                 int i;
-                for(i = 0; i < region_size; i++){
+                for (i = 0; i < region_size; i++)
+                {
                     *(((char *)newNode->memoryRegion) + i) = '0';
                 }
-                newNode->metaData = 
+                newNode->metaData = (Tracker *) malloc(sizeof(Tracker));
             }
             else
             {
@@ -90,31 +92,91 @@ Node *nextNode()
 
     return current;
 }
-Boolean delete( char const * const target )
+Boolean delete (char const *const target)
 {
-  Boolean deleted = false;
-  Node *curr = top;
-  Node *prev = NULL;
-  
-  while ( curr != NULL && strcmp( target, curr->name ) != 0 )
-  {
-    prev = curr;
-    curr = curr->next;
-  }
+    Boolean deleted = false;
+    Node *curr = top;
+    Node *prev = NULL;
 
-  if ( curr != NULL )
-  {
-    if ( prev != NULL )
-      prev->next = curr->next;
+    while (curr != NULL && strcmp(target, curr->name) != 0)
+    {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if (curr != NULL)
+    {
+        if (prev != NULL)
+            prev->next = curr->next;
+        else
+            top = curr->next;
+
+        free(curr->name);
+        free(curr->memoryRegion);
+        free(curr);
+        deleted = true;
+        //numNodes--;
+    }
+
+    return deleted;
+}
+Boolean createBlock(Node *init, r_size_t block_size)
+{
+    //printf("Here in createBlock\n");
+    current = init->metaData;
+   // printf("%p\n", current);
+    Tracker *curr = firstTrack();
+    Boolean created = false;
+    r_size_t counter = 0;
+    r_size_t hasFree = 0;
+    void *inMemory = init->memoryRegion;
+    void *block_pointer = NULL;
+    if (curr == NULL)
+    {
+        printf("Here in createBlock\n");
+        current = build_block(inMemory, block_size);
+        created = true;
+        //return init->memoryRegion;
+    }
     else
-      top = curr->next;
-    
-    free( curr->name );
-    free( curr->memoryRegion);
-    free( curr );
-    deleted = true;
-    //numNodes--;
-  }
-  
-  return deleted;
+    {
+       
+        for (counter = 0; counter < init->size && hasFree < block_size;)
+        {
+
+            
+            if (curr != NULL && inMemory == curr->start_of_block)
+            {
+                 
+                counter = counter + curr->size;
+                //printf("%d\n", counter);
+                inMemory = inMemory + counter;
+                printf("%p\n", inMemory);
+                curr = nextTrack();
+                 //printf("Here in createblock\n");
+                block_pointer = NULL;
+                hasFree = 0;
+            }
+            else
+            {
+                //printf("Here in createblock\n");
+                block_pointer = inMemory;
+                counter++;
+                hasFree++;
+            }
+        }
+        if (hasFree == block_size)
+        {
+            current = build_block(inMemory, block_size);
+            created = true;
+        }
+    }
+    return true;
+}
+void *currPointer(){
+    void *start_of_block = NULL;
+    if(current != NULL){
+        start_of_block = current->start_of_block;
+    }
+    return start_of_block;
 }
