@@ -4,10 +4,10 @@
 #include <ctype.h>
 #include <assert.h>
 #include "linkedlist.h"
+#include "tracker.h"
 
 static Node *top = NULL;
 static Node *traverseNode = NULL;
-static Tracker *current = NULL;
 
 Boolean insert(const char *region_name, r_size_t region_size)
 {
@@ -35,7 +35,9 @@ Boolean insert(const char *region_name, r_size_t region_size)
                 {
                     *(((char *)newNode->memoryRegion) + i) = '0';
                 }
-                newNode->metaData = (Tracker *) malloc(sizeof(Tracker));
+                //newNode->metaData = (Tracker *) malloc(sizeof(Tracker));
+                //current = newNode->metaData;
+                newNode->blocks = NULL;
             }
             else
             {
@@ -56,6 +58,7 @@ Boolean search(char const *const target)
     {
         if (strcmp(target, curr->name) == 0)
         {
+          //currentNode = curr;
             found = true;
         }
 
@@ -113,6 +116,7 @@ Boolean delete (char const *const target)
 
         free(curr->name);
         free(curr->memoryRegion);
+        free(curr->blocks);
         free(curr);
         deleted = true;
         //numNodes--;
@@ -120,63 +124,62 @@ Boolean delete (char const *const target)
 
     return deleted;
 }
-Boolean createBlock(Node *init, r_size_t block_size)
+void *find_block(Node *init, r_size_t block_size)
 {
-    //printf("Here in createBlock\n");
-    current = init->metaData;
-   // printf("%p\n", current);
-    Tracker *curr = firstTrack();
-    Boolean created = false;
-    r_size_t counter = 0;
-    r_size_t hasFree = 0;
-    void *inMemory = init->memoryRegion;
-    void *block_pointer = NULL;
-    if (curr == NULL)
+  //Boolean found = false;
+  void *start_block = NULL;
+  r_size_t counter = 0;
+  r_size_t hasFree = 0;
+  Tracker *current = init->blocks;
+  void *inMemory = init->memoryRegion;
+  for (counter = 0; counter < init->size && hasFree < block_size;)
+  {
+    if(current != NULL && inMemory == current->start)
     {
-        printf("Here in createBlock\n");
-        current = build_block(inMemory, block_size);
-        created = true;
-        //return init->memoryRegion;
+      //printf("here in find block");
+      counter = counter + current->size;
+      inMemory = inMemory + counter;
+      current = current->next;
+      hasFree = 0;
     }
     else
     {
-       
-        for (counter = 0; counter < init->size && hasFree < block_size;)
-        {
-
-            
-            if (curr != NULL && inMemory == curr->start_of_block)
-            {
-                 
-                counter = counter + curr->size;
-                //printf("%d\n", counter);
-                inMemory = inMemory + counter;
-                printf("%p\n", inMemory);
-                curr = nextTrack();
-                 //printf("Here in createblock\n");
-                block_pointer = NULL;
-                hasFree = 0;
-            }
-            else
-            {
-                //printf("Here in createblock\n");
-                block_pointer = inMemory;
-                counter++;
-                hasFree++;
-            }
-        }
-        if (hasFree == block_size)
-        {
-            current = build_block(inMemory, block_size);
-            created = true;
-        }
+      counter++;
+      hasFree++;
     }
-    return true;
+  }
+  if(hasFree == block_size)
+  {
+    add(&init->blocks, inMemory, block_size);
+    start_block = inMemory;
+  }
+  return start_block;
 }
-void *currPointer(){
-    void *start_of_block = NULL;
-    if(current != NULL){
-        start_of_block = current->start_of_block;
-    }
-    return start_of_block;
+void printBlock(Node *init)
+{
+  r_size_t sum = 0;
+  double percentage = 0;
+  int numBlocks = 0;
+  Tracker * current = init->blocks;
+  //sum = allocatedSpace(&init->blocks);
+
+  while(current != NULL)
+  {
+    sum += current->size;
+    numBlocks++;
+    printf("|  Block: %d\n",numBlocks);
+    printf("|  ------------------------------\n");
+    printf("|  | Address: %p\n", current->start);
+    printf("|  | Block Size: %d\n", current->size);
+    printf("|  ------------------------------\n");
+    current = current->next;
+  }
+  percentage = (double)sum / (double)init->size * 100;
+  printf("| %.2f percent memory is free\n", 100.00 - percentage);
+}
+r_size_t currSize(Node *init, void *block_ptr)
+{
+  r_size_t size = 0;
+  size = blockSize(init->blocks, block_ptr);
+  return size;
 }

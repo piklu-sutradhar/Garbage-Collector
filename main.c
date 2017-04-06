@@ -10,6 +10,7 @@ int main(void)
 {
     Boolean rc;
      int *ia;
+     char *ca1;
     //char *ca1; *ca2, *ca3, *ca4;
     //char *fail;
     //printf("here I am");
@@ -46,33 +47,59 @@ int main(void)
 
     rc = rinit("world", 1056);
      printf("Chosen: %s\n", rchosen()); //null
+     printf("-----------------------\n");
      rc = rchoose("This");
 
-    printf("Chosen: %s\n", rchosen()); 
+    printf("Chosen: %s\n", rchosen());
 
     ia = ralloc(sizeof(int) * 32);
     printf("Chosen: %p\n", ia);
+    printf("Size: %d\n", rsize(ia)); //128
 
-    ia = ralloc(sizeof(int) * 32);
+    ia = ralloc(sizeof(char) * 32);
     printf("Chosen: %p\n", ia);
+    printf("Size: %d\n", rsize(ia)); //32
+    ia = ralloc(1024);
+    assert(ia == NULL);
+    printf("-----------------------\n");
 
     rc = rchoose("hello");
 
-    printf("Chosen: %s\n", rchosen()); 
+    printf("Chosen: %s\n", rchosen());
 
     ia = ralloc(sizeof(int) * 32);
     printf("Chosen: %p\n", ia);
+    printf("Size: %d\n", rsize(ia)); //128
 
-    ia = ralloc(sizeof(int) * 32);
+    ia = ralloc(256);
     printf("Chosen: %p\n", ia);
+    printf("Size: %d\n", rsize(ia)); //256
 
-    ia = ralloc(sizeof(int) * 32);
+    ia = ralloc(sizeof(int) * 10);
     printf("Chosen: %p\n", ia);
+    printf("Size: %d\n", rsize(ia)); //40
 
-    ia = ralloc(sizeof(int) * 32);
-    printf("Chosen: %p\n", ia);
+    ca1 = ralloc(sizeof(int) * 32);
+    printf("Chosen: %p\n", ca1);
+    printf("Size: %d\n", rsize(ca1)); //128
 
-    //rdump();
+printf("-----------------------\n");
+    rc = rchoose("This");
+
+   printf("Chosen: %s\n", rchosen());
+
+   ia = ralloc(sizeof(int) * 1);
+   printf("Chosen: %p\n", ia);
+   printf("Size: %d\n", rsize(ia)); //4
+
+   ia = ralloc(sizeof(char) * 2);
+   printf("Chosen: %p\n", ia);
+   printf("Size: %d\n", rsize(ia)); //8
+
+    rdestroy("world");
+
+
+    rdump();
     /*
   rc = rchoose("hello");
   assert(rc);
@@ -92,22 +119,22 @@ int main(void)
   assert(rc);
   ca3 = ralloc(384); // now there's enough memory
   assert (NULL != ca3);
-  
+
   rc = rchoose("world");
   assert(rc);
   ca4 = ralloc(796);
   assert(NULL != ca4);
   printf("Size: %d\n", rsize(ca4)); // 800
-  
+
   rdump(); // hello & world
-  
+
   rdestroy("hello");
-  
+
   rc = rfree(ca4 + 24); // not the start of the block
   assert(!rc);
   rc = rfree(ca4); // better!
   assert(rc);
-  
+
   rdestroy("world");
 
   rdump(); // nothing

@@ -5,88 +5,57 @@
 #include <assert.h>
 #include "tracker.h"
 
-static Tracker *topTracker = NULL;
-static Tracker *traverseTrack = NULL;
 
-Tracker *build_block(void *start_of_block, r_size_t block_size)
+void add( Tracker **blocks, void *start, r_size_t block_size)
 {
-    
-    Tracker *curr = topTracker;
-    Tracker *prev = NULL;
-    Tracker *new = (Tracker *) malloc(sizeof(Tracker));
-    //printf("Here in buildBlock\n");
-    new->start_of_block = start_of_block;
-    new->size = block_size;
-    //printf("Here in buildBlock\n");
-    while (curr != NULL && start_of_block < curr->start_of_block)
-    {
-        prev = curr;
-        curr = curr->next;
-    }
-    if (prev == NULL)
-    {
-        new->next = topTracker;
-        topTracker = new;
-        return topTracker;
-    }
-    else
-    {
-       new->next = topTracker;
-       prev->next = new; 
-       return new;
-    }
-    
+  Tracker *curr = *blocks;
+  Tracker *prev = NULL;
+  Tracker *new = (Tracker *) malloc(sizeof(Tracker));
+  new->start = start;
+  new->size = block_size;
+
+  while(curr != NULL &&  curr->start < start )
+  {
+    prev = curr;
+    curr = curr->next;
+  }
+  if(prev == NULL)
+  {
+    new->next = *blocks;
+    *blocks = new;
+  }
+  else
+  {
+    new->next = curr;
+    prev->next = new;
+  }
+
+  //return start;
 }
-Boolean delete_block(void *start_of_block)
+r_size_t allocatedSpace(Tracker **head)
 {
-    Boolean rc = false;
-    Tracker *curr = topTracker;
-    Tracker *prev = NULL;
-     while (curr != NULL && start_of_block != curr->start_of_block)
-    {
-        prev = curr;
-        curr = curr->next;
-    }
-    if(prev == NULL)
-    {
-        topTracker = topTracker->next;
-        rc = true;
-    }
-    else
-    {
-        if(curr != NULL)
+        Tracker *curr = *head;
+
+        r_size_t totalSize = 0;
+
+        while ( curr != NULL )
         {
-            prev->next = curr->next;
-            rc = true;
+                totalSize += curr->size;
+                curr = curr->next;
         }
-    }
-    return rc;
+        return totalSize;
 }
-Tracker *firstTrack()
+r_size_t blockSize(Tracker *list, void *start)
 {
-    if (topTracker != NULL)
-    {
-        traverseTrack = topTracker->next;
-    }
-    return topTracker;
-}
-
-// gets the data at the current traversal node and increments the traversal
-Tracker *nextTrack()
-{
-
-    
-    //char *item = NULL;
-    
-    Tracker *current = NULL;
-    // no need to go past the end of the list...
-    if (traverseTrack != NULL)
-    {
-        
-        current = traverseTrack;
-        //item = traverseNode->string;
-        traverseTrack = traverseTrack->next;
-    }
-//printf("Here in track\n");
-    return current;
+  r_size_t size = 0;
+  Tracker *curr = list;
+  while(curr != NULL && curr->start != start)
+  {
+    curr = curr->next;
+  }
+  if(curr != NULL)
+  {
+    size = curr->size;
+  }
+  return size;
 }

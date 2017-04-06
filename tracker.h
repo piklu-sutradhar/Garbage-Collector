@@ -1,16 +1,25 @@
-typedef enum { false,
-               true } Boolean;
+
+#ifndef _TRACKER_H
+#define _TRACKER_H
+
+typedef enum { false, true } Boolean;
 
 typedef unsigned short r_size_t;
+
 typedef struct TRACKER Tracker;
 struct TRACKER
 {
-    void *start_of_block;
-    //void *end_of_block;
+    void *start;
     r_size_t size;
     Tracker *next;
 };
-Tracker *build_block(void *start_of_block, r_size_t block_size);
-Boolean delete_block(void *start_of_block);
-Tracker *firstTrack();
-Tracker *nextTrack();
+
+void add( Tracker **blocks,void *start, r_size_t block_size);
+void delete_block(Tracker **blocks,void *start);
+//void * return_current();
+r_size_t blockSize(Tracker *list, void *start);
+r_size_t allocatedSpace(Tracker **head);
+//Tracker *searchList (Tracker *list, void *start);
+//Tracker *firstTrack();
+//Tracker *nextTrack();
+#endif

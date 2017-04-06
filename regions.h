@@ -1,10 +1,8 @@
-#include "linkedlist.h"
+
 #ifndef _REGIONS_H
 #define _REGIONS_H
+#include "linkedlist.h"
 
-//typedef enum { false, true } Boolean;
-
-//typedef unsigned short r_size_t;
 
 Boolean rinit(const char *region_name, r_size_t region_size);
 Boolean rchoose(const char *region_name);

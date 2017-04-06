@@ -4,12 +4,13 @@
 #include <ctype.h>
 #include <assert.h>
 #include "regions.h"
-//#include "linkedlist.h"
+#include "linkedlist.h"
 
 //-------------------------------------------------------------------------------------
 // CONSTANTS and TYPES
 //-------------------------------------------------------------------------------------
 static Node *curr = NULL;
+//static Tracker *currentTrack = NULL;
 //-------------------------------------------------------------------------------------
 // VARIABLES
 //-------------------------------------------------------------------------------------
@@ -72,18 +73,14 @@ const char *rchosen()
 void *ralloc(r_size_t block_size)
 {
     //printf("choosen buffer: %p\n", curr->metaData);
-    void *start_of_block = NULL;
-    if(createBlock(curr, block_size) == true)
-    {
-        start_of_block = currPointer();
-    }
-    //printf("%p\n", start_of_block);
-    return start_of_block;
+  return find_block(curr, block_size);
 }
-/*
+
 r_size_t rsize(void *block_ptr)
 {
+  return currSize(curr,block_ptr);
 }
+/*
 Boolean rfree(void *block_ptr)
 {
 }*/
@@ -98,11 +95,12 @@ void rdump()
     Node *curr = firstNode();
     while (curr != NULL)
     {
-        printf("****************************\n");
-        printf("The Name of the region: %s\n", curr->name);
-        printf("The buffer pointer: %p\n", curr->memoryRegion);
-        printf("The size of the buffer: %hu\n", curr->size);
-        printf("****************************\n");
+        printf("*********************************************\n");
+        printf("| The Name of the region: %s\n", curr->name);
+        printf("| The buffer pointer: %p\n", curr->memoryRegion);
+        printf("| The size of the buffer: %hu\n", curr->size);
+        printBlock(curr);
+        printf("*********************************************\n\n");
         curr = nextNode();
     }
 }
