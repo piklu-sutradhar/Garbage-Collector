@@ -97,6 +97,7 @@ printf("-----------------------\n");
    printf("Size: %d\n", rsize(ia)); //8
 
     rdestroy("world");
+    rdestroy("hello");
 
 
     rdump();

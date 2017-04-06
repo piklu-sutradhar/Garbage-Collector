@@ -116,7 +116,14 @@ Boolean delete (char const *const target)
 
         free(curr->name);
         free(curr->memoryRegion);
-        free(curr->blocks);
+
+        while(curr->blocks != NULL)
+        {
+          Tracker *current = curr->blocks;
+          curr->blocks = (curr->blocks)->next;
+          free(current);  
+        }
+        //free(curr->blocks);
         free(curr);
         deleted = true;
         //numNodes--;

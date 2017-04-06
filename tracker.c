@@ -29,21 +29,29 @@ void add( Tracker **blocks, void *start, r_size_t block_size)
     new->next = curr;
     prev->next = new;
   }
-
   //return start;
 }
-r_size_t allocatedSpace(Tracker **head)
-{
-        Tracker *curr = *head;
-
-        r_size_t totalSize = 0;
-
-        while ( curr != NULL )
-        {
-                totalSize += curr->size;
-                curr = curr->next;
-        }
-        return totalSize;
+void delete_block( Tracker *list, void *start){
+    Tracker * curr = list;
+    Tracker * prev = NULL;
+    if(curr != NULL)
+    {
+      while(curr != NULL && start != curr->start)
+      {
+        prev = curr;
+        curr = curr->next;
+      }
+    if (prev != NULL)
+    {
+      list = list->next;
+    }
+    else
+    {
+      prev->next = curr->next;
+      //free(curr);
+    }
+    free(curr);
+  }
 }
 r_size_t blockSize(Tracker *list, void *start)
 {
