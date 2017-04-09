@@ -6,103 +6,22 @@
 
 // this code should run to completion with the output shown
 // you must think of additional cases of correct use and misuse for your testing
-int main(void)
+int main()
 {
-    Boolean rc;
-     int *ia;
-     char *ca1;
-    //char *ca1; *ca2, *ca3, *ca4;
-    //char *fail;
-    //printf("here I am");
-    rc = rinit("hello", 1024);
-    assert(rc);
+  Boolean rc;
+  int *ia;
+  char *ca1, *ca2, *ca3, *ca4;
+  char *fail;
 
-    rc = rinit("world", 798); // 800
-    assert(rc);
+  rc = rinit("hello", 1024);
+  assert(rc);
+  rc = rinit("world", 798); // 800
+  assert(rc);
 
-    // world
+  printf("Chosen: %s\n", rchosen()); // world
 
-    rc = rinit("This", 566); // 800
-    assert(rc);
-
-    rc = rinit("new", 958); // 800
-    assert(rc);
-
-    printf("Chosen: %s\n", rchosen()); //new
-
-    rc = rchoose("world");
-
-    printf("Chosen: %s\n", rchosen()); // world
-
-    rdestroy("This");
-    rc = rchoose("This");
-
-    printf("Chosen: %s\n", rchosen());
-
-    rc = rinit("This", 1000);
-    printf("Chosen: %s\n", rchosen()); // This
-
-    rc = rchoose("hello");
-    printf("Chosen: %s\n", rchosen()); //hello
-
-    rc = rinit("world", 1056);
-     printf("Chosen: %s\n", rchosen()); //null
-     printf("-----------------------\n");
-     rc = rchoose("This");
-
-    printf("Chosen: %s\n", rchosen());
-
-    ia = ralloc(sizeof(int) * 32);
-    printf("Chosen: %p\n", ia);
-    printf("Size: %d\n", rsize(ia)); //128
-
-    ia = ralloc(sizeof(char) * 32);
-    printf("Chosen: %p\n", ia);
-    printf("Size: %d\n", rsize(ia)); //32
-    ia = ralloc(1024);
-    assert(ia == NULL);
-    printf("-----------------------\n");
-
-    rc = rchoose("hello");
-
-    printf("Chosen: %s\n", rchosen());
-
-    ia = ralloc(sizeof(int) * 32);
-    printf("Chosen: %p\n", ia);
-    printf("Size: %d\n", rsize(ia)); //128
-
-    ia = ralloc(256);
-    printf("Chosen: %p\n", ia);
-    printf("Size: %d\n", rsize(ia)); //256
-
-    ia = ralloc(sizeof(int) * 10);
-    printf("Chosen: %p\n", ia);
-    printf("Size: %d\n", rsize(ia)); //40
-
-    ca1 = ralloc(sizeof(int) * 32);
-    printf("Chosen: %p\n", ca1);
-    printf("Size: %d\n", rsize(ca1)); //128
-
-printf("-----------------------\n");
-    rc = rchoose("This");
-
-   printf("Chosen: %s\n", rchosen());
-
-   ia = ralloc(sizeof(int) * 1);
-   printf("Chosen: %p\n", ia);
-   printf("Size: %d\n", rsize(ia)); //4
-
-   ia = ralloc(sizeof(char) * 2);
-   printf("Chosen: %p\n", ia);
-   printf("Size: %d\n", rsize(ia)); //8
-
-    rdestroy("world");
-    rdestroy("hello");
-
-
-    rdump();
-    /*
   rc = rchoose("hello");
+  printf("Chosen: %s\n", rchosen());
   assert(rc);
   ia = ralloc(sizeof(int) * 32);
   printf("Size: %d\n", rsize(ia)); // 128
@@ -126,11 +45,11 @@ printf("-----------------------\n");
   ca4 = ralloc(796);
   assert(NULL != ca4);
   printf("Size: %d\n", rsize(ca4)); // 800
+  //rdestroy("hello");
+  //rdump(); // hello & world
+  printf("Here After rdestroy");
 
-  rdump(); // hello & world
-
-  rdestroy("hello");
-
+  //printf("Here After rdestroy"); // 800
   rc = rfree(ca4 + 24); // not the start of the block
   assert(!rc);
   rc = rfree(ca4); // better!
@@ -140,7 +59,7 @@ printf("-----------------------\n");
 
   rdump(); // nothing
 
-  fprintf(stderr,"\nEnd of processing.\n");*/
+  fprintf(stderr,"\nEnd of processing.\n");
 
-    return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }

@@ -27,4 +27,5 @@ void *currPointer(Node *init);
 void printBlock(Node *init);
 r_size_t currSize(Node *init, void *block_ptr);
 void *block_start();
+Boolean freeMemory(Node * init, void * start);
 #endif

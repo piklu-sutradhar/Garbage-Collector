@@ -80,10 +80,10 @@ r_size_t rsize(void *block_ptr)
 {
   return currSize(curr,block_ptr);
 }
-/*
 Boolean rfree(void *block_ptr)
 {
-}*/
+  return freeMemory(curr,block_ptr);
+}
 void rdestroy(const char *region_name)
 {
     //Boolean rc = false;
@@ -92,15 +92,17 @@ void rdestroy(const char *region_name)
 }
 void rdump()
 {
-    Node *curr = firstNode();
-    while (curr != NULL)
+    Node *toPrint= firstNode();
+    while (toPrint != NULL)
     {
+      assert(toPrint != NULL);
+      printf("Here After rdestroy\n");
         printf("*********************************************\n");
-        printf("| The Name of the region: %s\n", curr->name);
-        printf("| The buffer pointer: %p\n", curr->memoryRegion);
-        printf("| The size of the buffer: %hu\n", curr->size);
-        printBlock(curr);
+        printf("| The Name of the region: %s\n", toPrint->name);
+        printf("| The buffer pointer: %p\n", toPrint->memoryRegion);
+        printf("| The size of the buffer: %hu\n", toPrint->size);
+        printBlock(toPrint);
         printf("*********************************************\n\n");
-        curr = nextNode();
+        toPrint= nextNode();
     }
 }

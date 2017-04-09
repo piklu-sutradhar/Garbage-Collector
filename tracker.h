@@ -15,9 +15,9 @@ struct TRACKER
 };
 
 void add( Tracker **blocks,void *start, r_size_t block_size);
-//void delete_block(Tracker **blocks,void *start);
+//Boolean delete_block(Tracker **blocks,void *start);
 //void * return_current();
-void delete_block( Tracker *list, void *start);
+Boolean delete_block( Tracker **list, void *start);
 r_size_t blockSize(Tracker *list, void *start);
 r_size_t allocatedSpace(Tracker **head);
 //Tracker *searchList (Tracker *list, void *start);

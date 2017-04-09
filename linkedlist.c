@@ -92,7 +92,6 @@ Node *nextNode()
         //item = traverseNode->string;
         traverseNode = traverseNode->next;
     }
-
     return current;
 }
 Boolean delete (char const *const target)
@@ -121,7 +120,7 @@ Boolean delete (char const *const target)
         {
           Tracker *current = curr->blocks;
           curr->blocks = (curr->blocks)->next;
-          free(current);  
+          free(current);
         }
         //free(curr->blocks);
         free(curr);
@@ -137,15 +136,24 @@ void *find_block(Node *init, r_size_t block_size)
   void *start_block = NULL;
   r_size_t counter = 0;
   r_size_t hasFree = 0;
+  block_size = (block_size + 7) - ((block_size + 7)%8);
   Tracker *current = init->blocks;
   void *inMemory = init->memoryRegion;
+  void *nextFree = init->memoryRegion;
+  /*if(current == NULL && block_size < init->size){
+    add(&init->blocks, nextFree, block_size);
+    start_block = nextFree;
+  }*/
+  //printf("%s\n",inMemory);
   for (counter = 0; counter < init->size && hasFree < block_size;)
   {
     if(current != NULL && inMemory == current->start)
     {
-      //printf("here in find block");
+
+      //printf("%s\n",current->start);
       counter = counter + current->size;
-      inMemory = inMemory + counter;
+      inMemory = inMemory + current->size;
+      nextFree = nextFree + current->size;
       current = current->next;
       hasFree = 0;
     }
@@ -153,12 +161,15 @@ void *find_block(Node *init, r_size_t block_size)
     {
       counter++;
       hasFree++;
+      inMemory++;
     }
   }
   if(hasFree == block_size)
   {
-    add(&init->blocks, inMemory, block_size);
-    start_block = inMemory;
+
+    //printf("Here before rdestroy\n");
+    add(&init->blocks, nextFree, block_size);
+    start_block = nextFree;
   }
   return start_block;
 }
@@ -172,6 +183,7 @@ void printBlock(Node *init)
 
   while(current != NULL)
   {
+  //  printf("Here before rdestroy");
     sum += current->size;
     numBlocks++;
     printf("|  Block: %d\n",numBlocks);
@@ -189,4 +201,8 @@ r_size_t currSize(Node *init, void *block_ptr)
   r_size_t size = 0;
   size = blockSize(init->blocks, block_ptr);
   return size;
+}
+Boolean freeMemory(Node * init, void * start)
+{
+  return delete_block(&init->blocks, start);
 }

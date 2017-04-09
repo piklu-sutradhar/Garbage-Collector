@@ -11,6 +11,7 @@ void add( Tracker **blocks, void *start, r_size_t block_size)
   Tracker *curr = *blocks;
   Tracker *prev = NULL;
   Tracker *new = (Tracker *) malloc(sizeof(Tracker));
+  assert(new != NULL);
   new->start = start;
   new->size = block_size;
 
@@ -31,8 +32,9 @@ void add( Tracker **blocks, void *start, r_size_t block_size)
   }
   //return start;
 }
-void delete_block( Tracker *list, void *start){
-    Tracker * curr = list;
+Boolean delete_block( Tracker **list, void *start){
+  Boolean result = false;
+    Tracker * curr = *list;
     Tracker * prev = NULL;
     if(curr != NULL)
     {
@@ -41,17 +43,20 @@ void delete_block( Tracker *list, void *start){
         prev = curr;
         curr = curr->next;
       }
-    if (prev != NULL)
+    if (prev == NULL)
     {
-      list = list->next;
+      *list = curr->next;
+      result = true;
+          free(curr);
     }
     else
     {
       prev->next = curr->next;
-      //free(curr);
+      result = true;
+          free(curr);
     }
-    free(curr);
   }
+  return result;
 }
 r_size_t blockSize(Tracker *list, void *start)
 {
