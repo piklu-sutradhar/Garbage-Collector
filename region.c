@@ -87,9 +87,7 @@ Boolean rfree(void *block_ptr)
 }
 void rdestroy(const char *region_name)
 {
-    //Boolean rc = false;
     delete (region_name);
-    // return rc;
 }
 void rdump()
 {
@@ -97,11 +95,10 @@ void rdump()
     while (toPrint != NULL)
     {
       assert(toPrint != NULL);
-      //printf("Here After rdestroy\n");
         printf("*********************************************\n");
-        printf("| The Name of the region: %s\n", toPrint->name);
-        printf("| The buffer pointer: %p\n", toPrint->memoryRegion);
-        printf("| The size of the buffer: %hu\n", toPrint->size);
+        printf("| The Name of the region: %s                \n", toPrint->name);
+        printf("| The buffer pointer: %p                    \n", toPrint->memoryRegion);
+        printf("| The size of the buffer: %hu               \n", toPrint->size);
         printBlock(toPrint);
         printf("*********************************************\n\n");
         toPrint= nextNode();

@@ -39,8 +39,13 @@ Boolean insert(const char *region_name, r_size_t region_size)
             else
             {
                 free(newNode->name);
+                newNode->name = NULL;
+                assert(newNode->name == NULL);
                 free(newNode);
+                newNode = NULL;
+                assert(newNode == NULL);
                 rc = false;
+                assert(!rc);
             }
         }
     }
@@ -50,20 +55,21 @@ Boolean search(char const *const target)
 {
     Boolean found = false;
     Node *curr = top;
-
+    assert(target != NULL);
     while (curr != NULL && !found)
     {
+      assert(curr != NULL);
         if (strcmp(target, curr->name) == 0)
         {
-            found = true;
+          assert(strlen(target) == strlen(curr->name));
+          found = true;
+          assert(found == true);
         }
-
         else
         {
             curr = curr->next;
         }
     }
-
     return found;
 }
 // starts a list traversal by getting the data at top
@@ -71,6 +77,7 @@ Node *firstNode()
 {
     if (top != NULL)
     {
+      assert(top != NULL);
         traverseNode = top->next;
     }
     return top;
@@ -82,6 +89,7 @@ Node *nextNode()
     Node *current = NULL;
     if (traverseNode != NULL)
     {
+      assert(traverseNode != NULL);
         current = traverseNode;
         traverseNode = traverseNode->next;
     }
@@ -92,7 +100,7 @@ Boolean delete (char const *const target)
     Boolean deleted = false;
     Node *curr = top;
     Node *prev = NULL;
-
+    assert(target != NULL);
     while (curr != NULL && strcmp(target, curr->name) != 0)
     {
         prev = curr;
@@ -102,38 +110,57 @@ Boolean delete (char const *const target)
     if (curr != NULL)
     {
         if (prev != NULL)
+        {
             prev->next = curr->next;
+        }
         else
-            top = curr->next;
-
+        {
+          top = curr->next;
+        }
         free(curr->name);
+        curr->name = NULL;
+        assert(curr->name == NULL);
         free(curr->memoryRegion);
-
+        curr->memoryRegion = NULL;
+        assert(curr->memoryRegion == NULL);
         while(curr->blocks != NULL)
         {
+          assert(curr->blocks != NULL);
           Tracker *current = curr->blocks;
+          assert(current != NULL);
           curr->blocks = (curr->blocks)->next;
           free(current);
+          current = NULL;
+          assert(current == NULL);
         }
         free(curr);
+        curr = NULL;
+        assert(curr == NULL);
         deleted = true;
+        assert(deleted == true);
     }
 
     return deleted;
 }
 void *find_block(Node *init, r_size_t block_size)
 {
+  assert(init != NULL);
   void *start_block = NULL;
   r_size_t counter = 0;
   r_size_t hasFree = 0;
   block_size = (block_size + 7) - ((block_size + 7)%8);
+  assert(block_size > 0 && block_size <= init->size);
+  assert(block_size % 8 == 0);
   Tracker *current = init->blocks;
   void *inMemory = init->memoryRegion;
+  assert(inMemory != NULL);
   void *nextFree = init->memoryRegion;
+  assert(nextFree != NULL);
   for (counter = 0; counter < init->size && hasFree < block_size;)
   {
     if(current != NULL && inMemory == current->start)
     {
+      assert(inMemory == current->start);
       counter = counter + current->size;
       inMemory = inMemory + current->size;
       nextFree = nextFree + current->size;
@@ -142,13 +169,20 @@ void *find_block(Node *init, r_size_t block_size)
     }
     else
     {
+      assert(counter <= init->size);
       counter++;
       hasFree++;
+      assert(hasFree <= block_size);
       inMemory++;
     }
   }
   if(hasFree == block_size)
   {
+    assert(hasFree == block_size);
+    for(counter = 0; counter < block_size; counter++)
+    {
+      *((char *)(nextFree+counter)) = '0';
+    }
     add(&init->blocks, nextFree, block_size);
     start_block = nextFree;
   }
@@ -156,6 +190,7 @@ void *find_block(Node *init, r_size_t block_size)
 }
 void printBlock(Node *init)
 {
+  assert(init != NULL);
   r_size_t sum = 0;
   double percentage = 0;
   int numBlocks = 0;

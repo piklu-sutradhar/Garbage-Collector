@@ -22,6 +22,7 @@ int main()
 
   rc = rchoose("hello");
   assert(rc);
+  printf("Chosen: %s\n", rchosen());
   ia = ralloc(sizeof(int) * 32);
   printf("Size: %d\n", rsize(ia)); // 128
   ca1 = ralloc(256);
