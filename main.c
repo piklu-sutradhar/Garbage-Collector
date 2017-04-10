@@ -21,7 +21,6 @@ int main()
   printf("Chosen: %s\n", rchosen()); // world
 
   rc = rchoose("hello");
-  printf("Chosen: %s\n", rchosen());
   assert(rc);
   ia = ralloc(sizeof(int) * 32);
   printf("Size: %d\n", rsize(ia)); // 128
@@ -45,11 +44,11 @@ int main()
   ca4 = ralloc(796);
   assert(NULL != ca4);
   printf("Size: %d\n", rsize(ca4)); // 800
-  //rdestroy("hello");
-  //rdump(); // hello & world
-  printf("Here After rdestroy");
 
-  //printf("Here After rdestroy"); // 800
+  rdump(); // hello & world
+
+  rdestroy("hello");
+
   rc = rfree(ca4 + 24); // not the start of the block
   assert(!rc);
   rc = rfree(ca4); // better!

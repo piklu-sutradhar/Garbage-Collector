@@ -72,8 +72,9 @@ const char *rchosen()
 }
 void *ralloc(r_size_t block_size)
 {
-    //printf("choosen buffer: %p\n", curr->metaData);
-  return find_block(curr, block_size);
+  void * allocated = find_block(curr, block_size);
+  //printf("choosen buffer: %p\n", allocated);
+   return allocated;
 }
 
 r_size_t rsize(void *block_ptr)
@@ -96,7 +97,7 @@ void rdump()
     while (toPrint != NULL)
     {
       assert(toPrint != NULL);
-      printf("Here After rdestroy\n");
+      //printf("Here After rdestroy\n");
         printf("*********************************************\n");
         printf("| The Name of the region: %s\n", toPrint->name);
         printf("| The buffer pointer: %p\n", toPrint->memoryRegion);

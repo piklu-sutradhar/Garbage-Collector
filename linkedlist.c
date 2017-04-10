@@ -13,30 +13,27 @@ Boolean insert(const char *region_name, r_size_t region_size)
 {
     Boolean rc = true;
     Node *newNode = NULL;
-
+    assert(newNode == NULL);
     newNode = (Node *)malloc(sizeof(Node));
     assert(newNode);
     if (newNode)
     {
         newNode->next = top;
         top = newNode;
+        assert(top != NULL);
         newNode->name = (char *)malloc(strlen(region_name) + 1);
         assert(newNode->name != NULL);
         if (newNode->name != NULL)
         {
             strcpy(newNode->name, region_name);
             assert(strcmp(newNode->name, region_name) == 0);
+            assert(strlen(region_name) == strlen(newNode->name));
             newNode->size = region_size;
+            assert(newNode->size == region_size);
             newNode->memoryRegion = malloc(region_size);
+            assert(newNode->memoryRegion != NULL);
             if (newNode->memoryRegion != NULL)
             {
-                int i;
-                for (i = 0; i < region_size; i++)
-                {
-                    *(((char *)newNode->memoryRegion) + i) = '0';
-                }
-                //newNode->metaData = (Tracker *) malloc(sizeof(Tracker));
-                //current = newNode->metaData;
                 newNode->blocks = NULL;
             }
             else
@@ -58,7 +55,6 @@ Boolean search(char const *const target)
     {
         if (strcmp(target, curr->name) == 0)
         {
-          //currentNode = curr;
             found = true;
         }
 
@@ -83,13 +79,10 @@ Node *firstNode()
 // gets the data at the current traversal node and increments the traversal
 Node *nextNode()
 {
-    //char *item = NULL;
     Node *current = NULL;
-    // no need to go past the end of the list...
     if (traverseNode != NULL)
     {
         current = traverseNode;
-        //item = traverseNode->string;
         traverseNode = traverseNode->next;
     }
     return current;
@@ -122,17 +115,14 @@ Boolean delete (char const *const target)
           curr->blocks = (curr->blocks)->next;
           free(current);
         }
-        //free(curr->blocks);
         free(curr);
         deleted = true;
-        //numNodes--;
     }
 
     return deleted;
 }
 void *find_block(Node *init, r_size_t block_size)
 {
-  //Boolean found = false;
   void *start_block = NULL;
   r_size_t counter = 0;
   r_size_t hasFree = 0;
@@ -140,17 +130,10 @@ void *find_block(Node *init, r_size_t block_size)
   Tracker *current = init->blocks;
   void *inMemory = init->memoryRegion;
   void *nextFree = init->memoryRegion;
-  /*if(current == NULL && block_size < init->size){
-    add(&init->blocks, nextFree, block_size);
-    start_block = nextFree;
-  }*/
-  //printf("%s\n",inMemory);
   for (counter = 0; counter < init->size && hasFree < block_size;)
   {
     if(current != NULL && inMemory == current->start)
     {
-
-      //printf("%s\n",current->start);
       counter = counter + current->size;
       inMemory = inMemory + current->size;
       nextFree = nextFree + current->size;
@@ -166,8 +149,6 @@ void *find_block(Node *init, r_size_t block_size)
   }
   if(hasFree == block_size)
   {
-
-    //printf("Here before rdestroy\n");
     add(&init->blocks, nextFree, block_size);
     start_block = nextFree;
   }
@@ -179,11 +160,9 @@ void printBlock(Node *init)
   double percentage = 0;
   int numBlocks = 0;
   Tracker * current = init->blocks;
-  //sum = allocatedSpace(&init->blocks);
 
   while(current != NULL)
   {
-  //  printf("Here before rdestroy");
     sum += current->size;
     numBlocks++;
     printf("|  Block: %d\n",numBlocks);
