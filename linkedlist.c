@@ -158,12 +158,12 @@ void *find_block(Node *init, r_size_t block_size)
   assert(nextFree != NULL);
   for (counter = 0; counter < init->size && hasFree < block_size;)
   {
-    if(current != NULL && inMemory == current->start)
+    if(current != NULL && inMemory + counter == current->start)
     {
-      assert(inMemory == current->start);
       counter = counter + current->size;
-      inMemory = inMemory + current->size;
+      assert(counter <= init->size);
       nextFree = nextFree + current->size;
+      assert(nextFree <= (init->memoryRegion + init->size));
       current = current->next;
       hasFree = 0;
     }
@@ -171,9 +171,9 @@ void *find_block(Node *init, r_size_t block_size)
     {
       assert(counter <= init->size);
       counter++;
+      assert(hasFree < block_size);
       hasFree++;
       assert(hasFree <= block_size);
-      inMemory++;
     }
   }
   if(hasFree == block_size)
@@ -182,22 +182,25 @@ void *find_block(Node *init, r_size_t block_size)
     for(counter = 0; counter < block_size; counter++)
     {
       *((char *)(nextFree+counter)) = '0';
+      assert(*((char *)(nextFree+counter)) == '0');
     }
-    add(&init->blocks, nextFree, block_size);
     start_block = nextFree;
-  }
+    assert(start_block != NULL);
+    add(&init->blocks, start_block, block_size);
+    }
   return start_block;
 }
-void printBlock(Node *init)
+void printBlock(Node const *const init)
 {
   assert(init != NULL);
   r_size_t sum = 0;
   double percentage = 0;
   int numBlocks = 0;
   Tracker * current = init->blocks;
-
   while(current != NULL)
   {
+    assert(current != NULL);
+    assert(current->size > 0);
     sum += current->size;
     numBlocks++;
     printf("|  Block: %d\n",numBlocks);
@@ -208,15 +211,18 @@ void printBlock(Node *init)
     current = current->next;
   }
   percentage = (double)sum / (double)init->size * 100;
-  printf("| %.2f percent memory is free\n", 100.00 - percentage);
+  printf("| %.2f%c percent memory is free\n", 100.00 - percentage,37);
 }
 r_size_t currSize(Node *init, void *block_ptr)
 {
+  assert(init != NULL);
   r_size_t size = 0;
   size = blockSize(init->blocks, block_ptr);
   return size;
 }
 Boolean freeMemory(Node * init, void * start)
 {
+  assert(init != NULL);
+  assert(start != NULL);
   return delete_block(&init->blocks, start);
 }

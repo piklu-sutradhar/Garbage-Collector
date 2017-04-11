@@ -72,6 +72,7 @@ const char *rchosen()
 }
 void *ralloc(r_size_t block_size)
 {
+  assert(curr != NULL);
   void * allocated = find_block(curr, block_size);
   //printf("choosen buffer: %p\n", allocated);
    return allocated;
@@ -87,7 +88,14 @@ Boolean rfree(void *block_ptr)
 }
 void rdestroy(const char *region_name)
 {
-    delete (region_name);
+    if(delete (region_name) == true)
+    {
+      curr = firstNode();
+    }
+    else
+    {
+      printf("There is an error to delete Node with name \"%s\"\n", region_name);
+    }
 }
 void rdump()
 {

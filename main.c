@@ -49,6 +49,7 @@ int main()
   rdump(); // hello & world
 
   rdestroy("hello");
+  //rdestroy("hello");
 
   rc = rfree(ca4 + 24); // not the start of the block
   assert(!rc);

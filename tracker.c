@@ -9,6 +9,7 @@
 void add( Tracker **blocks, void *start, r_size_t block_size)
 {
   assert(NULL != start);
+  assert(block_size > 0);
   Tracker *curr = *blocks;
   Tracker *prev = NULL;
   Tracker *new = (Tracker *) malloc(sizeof(Tracker));
