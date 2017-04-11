@@ -227,7 +227,7 @@ r_size_t currSize(Node *init, void *block_ptr)
 Boolean freeMemory(Node * init, void * start)
 {
   Boolean rc = false;
-  if(init != NULL)
+  if(init != NULL && start != NULL)
   {
     assert(init != NULL);
     assert(start != NULL);

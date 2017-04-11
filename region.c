@@ -59,22 +59,25 @@ Boolean rinit(const char *region_name, r_size_t region_size)
 }
 Boolean rchoose(const char *region_name)
 {
-  assert(region_name != NULL);
-    Boolean rc = false;
+  Boolean rc = false;
+  if(region_name != NULL)
+  {
+    assert(region_name != NULL);
     curr = firstNode();
     while (curr != NULL && strcmp(curr->name, region_name) != 0)
     {
-        curr = nextNode();
+      curr = nextNode();
     }
     if (curr != NULL)
     {
-        rc = true;
+      rc = true;
     }
     else
     {
       curr = firstNode();
     }
-    return rc;
+  }
+  return rc;
 }
 const char *rchosen()
 {
