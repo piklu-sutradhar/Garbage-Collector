@@ -24,31 +24,42 @@ static Node *curr = NULL;
 //-------------------------------------------------------------------------------------
 Boolean rinit(const char *region_name, r_size_t region_size)
 {
-    Boolean rc = false;
-    if (region_size > 0)
-    {
-        region_size += 7;
-        region_size = region_size - (region_size % 8);
-        if (search(region_name) == false)
-        {
-            Boolean inserted = insert(region_name, region_size);
-            if (inserted == true)
-            {
-                rc = rchoose(region_name);
-            }
-        }
-        else
-        {
-            printf("Name \"%s\" is already taken \n", region_name);
-            curr = NULL;
-            rc = false;
-        }
-    }
+  assert(region_name != NULL);
+  Boolean rc = false;
+  if(strlen(region_name) > 0 && region_size >0)
+  {
+    assert(region_size > 0 );
+      if (region_size > 0)
+      {
+          region_size += 7;
+          region_size = region_size - (region_size % 8);
+          assert(region_size % 8 == 0);
+          if (search(region_name) == false)
+          {
+              Boolean inserted = insert(region_name, region_size);
 
-    return rc;
+              if (inserted == true)
+              {
+                assert(inserted == true);
+                rc = rchoose(region_name);
+              }
+          }
+          else
+          {
+              printf("Name \"%s\" is already taken \n", region_name);
+              curr = NULL;
+              rc = false;
+          }
+      }
+  }
+  else{
+    rc = false;
+  }
+  return rc;
 }
 Boolean rchoose(const char *region_name)
 {
+  assert(region_name != NULL);
     Boolean rc = false;
     curr = firstNode();
     while (curr != NULL && strcmp(curr->name, region_name) != 0)
@@ -59,6 +70,10 @@ Boolean rchoose(const char *region_name)
     {
         rc = true;
     }
+    else
+    {
+      curr = firstNode();
+    }
     return rc;
 }
 const char *rchosen()
@@ -66,25 +81,40 @@ const char *rchosen()
     char *name = NULL;
     if (curr != NULL)
     {
-        name = curr->name;
+      assert(curr != NULL);
+      name = curr->name;
+      assert(name != NULL);
     }
     return name;
 }
 void *ralloc(r_size_t block_size)
 {
-  assert(curr != NULL);
-  void * allocated = find_block(curr, block_size);
-  //printf("choosen buffer: %p\n", allocated);
-   return allocated;
+  void * block_start = NULL;
+  if(block_size>0 && curr != NULL)
+  {
+    assert(curr != NULL);
+    block_start = find_block(curr, block_size);
+  }
+   return block_start;
 }
 
 r_size_t rsize(void *block_ptr)
 {
-  return currSize(curr,block_ptr);
+  r_size_t size = 0;
+  if(block_ptr != NULL){
+    assert(block_ptr != NULL);
+    size = currSize(curr,block_ptr);
+  }
+  return size;
 }
 Boolean rfree(void *block_ptr)
 {
-  return freeMemory(curr,block_ptr);
+  Boolean result = false;
+  if(block_ptr != NULL && curr != NULL)
+  {
+    result = freeMemory(curr,block_ptr);
+  }
+  return result;
 }
 void rdestroy(const char *region_name)
 {

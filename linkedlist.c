@@ -156,7 +156,7 @@ void *find_block(Node *init, r_size_t block_size)
   assert(inMemory != NULL);
   void *nextFree = init->memoryRegion;
   assert(nextFree != NULL);
-  for (counter = 0; counter < init->size && hasFree < block_size;)
+  while(counter < init->size && hasFree < block_size)
   {
     if(current != NULL && inMemory + counter == current->start)
     {
@@ -215,14 +215,23 @@ void printBlock(Node const *const init)
 }
 r_size_t currSize(Node *init, void *block_ptr)
 {
-  assert(init != NULL);
   r_size_t size = 0;
-  size = blockSize(init->blocks, block_ptr);
+  if(init != NULL && block_ptr != NULL)
+  {
+    assert(init != NULL);
+    assert(block_ptr != NULL);
+    size = blockSize(init->blocks, block_ptr);
+  }
   return size;
 }
 Boolean freeMemory(Node * init, void * start)
 {
-  assert(init != NULL);
-  assert(start != NULL);
-  return delete_block(&init->blocks, start);
+  Boolean rc = false;
+  if(init != NULL)
+  {
+    assert(init != NULL);
+    assert(start != NULL);
+    rc = delete_block(&init->blocks, start);
+  }
+  return rc;
 }
