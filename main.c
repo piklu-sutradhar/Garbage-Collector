@@ -46,6 +46,9 @@ int main()
   ca4 = ralloc(796);
   assert(NULL == ca4);
   printf("Size: %d\n", rsize(ca4)); // 800
+  rc = rinit("world", 450); // 800
+  //printf("Chosen: %d\n", rc);
+  assert(rc);
 
   rdump(); // hello & world
 

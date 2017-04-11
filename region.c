@@ -121,6 +121,8 @@ Boolean rfree(void *block_ptr)
 }
 void rdestroy(const char *region_name)
 {
+  if(curr != NULL && strcmp(region_name, curr->name) ==0)
+  {
     if(delete (region_name) == true)
     {
       curr = firstNode();
@@ -129,6 +131,14 @@ void rdestroy(const char *region_name)
     {
       printf("There is an error to delete Node with name \"%s\"\n", region_name);
     }
+  }
+  else
+  {
+    if(delete (region_name) == false)
+    {
+      printf("There is an error to delete Node with name \"%s\"\n", region_name);
+    }
+  }
 }
 void rdump()
 {
