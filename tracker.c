@@ -23,6 +23,23 @@ void validateList(Tracker * blocks)
     assert(current->next != NULL);
   }
 }
+//Invariant to check if the list in order
+void isInOrder(Tracker *list)
+{
+  if(numBlocks > 1)
+  {
+    Tracker * prev = list;
+    Tracker * current = prev->next;
+    void * min = list->start;
+    while(current != NULL)
+    {
+      assert(min < current->start);
+      min = current->start;
+      prev = current;
+      current = current->next;
+    }
+  }
+}
 
 //function to add a block with given pointer and size
 void add( Tracker **blocks, void *start, r_size_t block_size)
@@ -56,6 +73,7 @@ void add( Tracker **blocks, void *start, r_size_t block_size)
     *blocks = new;
     numBlocks++;
     validateList(*blocks);
+    isInOrder(*blocks);
     assert(*blocks = new);
   }
   //anywhere else in the block list.
