@@ -8,12 +8,33 @@
 
 static Node *top = NULL;
 static Node *traverseNode = NULL;
+static int numNodes = 0;
 
+//Invariant
+void validateLinkedlist()
+{
+  if(numNodes == 0)
+  {
+    assert(top == NULL);
+  }
+  else if(numNodes == 1)
+  {
+    assert (top != NULL);
+  }
+  else
+  {
+    assert(top->next != NULL);
+  }
+}
+
+//function to add a new region
 Boolean insert(const char *region_name, r_size_t region_size)
 {
+
     Boolean rc = true;
     Node *newNode = NULL;
     assert(newNode == NULL);
+    validateLinkedlist();
     newNode = (Node *)malloc(sizeof(Node));
     assert(newNode);
     if (newNode)
@@ -35,6 +56,8 @@ Boolean insert(const char *region_name, r_size_t region_size)
             if (newNode->memoryRegion != NULL)
             {
                 newNode->blocks = NULL;
+                numNodes++;
+                validateLinkedlist();
             }
             else
             {
@@ -53,6 +76,7 @@ Boolean insert(const char *region_name, r_size_t region_size)
 }
 Boolean search(char const *const target)
 {
+  validateLinkedlist();
     Boolean found = false;
     Node *curr = top;
     assert(target != NULL);
@@ -75,6 +99,7 @@ Boolean search(char const *const target)
 // starts a list traversal by getting the data at top
 Node *firstNode()
 {
+  validateLinkedlist();
     if (top != NULL)
     {
       assert(top != NULL);
@@ -86,6 +111,7 @@ Node *firstNode()
 // gets the data at the current traversal node and increments the traversal
 Node *nextNode()
 {
+  validateLinkedlist();
     Node *current = NULL;
     if (traverseNode != NULL)
     {
@@ -97,6 +123,7 @@ Node *nextNode()
 }
 Boolean delete (char const *const target)
 {
+  validateLinkedlist();
     Boolean deleted = false;
     Node *curr = top;
     Node *prev = NULL;
@@ -112,10 +139,14 @@ Boolean delete (char const *const target)
         if (prev != NULL)
         {
             prev->next = curr->next;
+            numNodes--;
+            validateLinkedlist();
         }
         else
         {
           top = curr->next;
+          numNodes--;
+          validateLinkedlist();
         }
         free(curr->name);
         curr->name = NULL;
@@ -139,11 +170,12 @@ Boolean delete (char const *const target)
         deleted = true;
         assert(deleted == true);
     }
-
+    validateLinkedlist();
     return deleted;
 }
 void *find_block(Node *init, r_size_t block_size)
 {
+  validateLinkedlist();
   assert(init != NULL);
   void *start_block = NULL;
   r_size_t counter = 0;
@@ -187,6 +219,7 @@ void *find_block(Node *init, r_size_t block_size)
     start_block = nextFree;
     assert(start_block != NULL);
     add(&init->blocks, start_block, block_size);
+    validateList(init->blocks);
     }
   return start_block;
 }

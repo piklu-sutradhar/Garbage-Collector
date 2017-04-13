@@ -14,8 +14,8 @@ struct TRACKER
     Tracker *next;
 };
 
+void validateList(Tracker * blocks);
 void add( Tracker **blocks,void *start, r_size_t block_size);
 Boolean delete_block( Tracker **list, void *start);
 r_size_t blockSize(Tracker *list, void *start);
-r_size_t allocatedSpace(Tracker **head);
 #endif

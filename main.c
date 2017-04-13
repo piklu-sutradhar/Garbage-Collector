@@ -1,8 +1,80 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #include "regions.h"
+static int testExecuted = 0;
+static int testFailed = 0;
+/*
+void buildRegion(char * region_name, r_size_t region_size)
+{
+  Boolean rc;
+  if(strlen(region_name) > 0 && region_size > 0)
+  {
+
+    rc = rinit(region_name, region_size);
+    assert(rc);
+    if(rc != true)
+    {
+
+      testFailed++;
+      printf("Failed to creat rgion with name = %s and size = %hu\n",region_name,region_size );
+    }
+  }
+  else
+  {
+    rc = rinit(region_name, region_size);
+    assert(!rc);
+    if(rc == true)
+      {
+          printf("here\n");
+        testFailed++;
+        printf("It created rgion with name = %s and size = %hu\n",region_name,region_size );
+      }
+    }
+    testExecuted++;
+}
+void checkRchoose(char * region_name)
+{
+  const char * activeRegion = NULL;
+  rchoose(region_name);
+  activeRegion = rchosen();
+  if(strcmp(activeRegion,region_name) != 0)
+  {
+    testFailed++;
+    printf("Chosen region is different then \"%s\"\n",region_name);
+  }
+  testExecuted++;
+}
+void * checkRalloc(r_size_t block_size)
+{
+  void * ra = ralloc(block_size);
+  r_size_t size = rsize(ra);
+  if(ra!= NULL && size != block_size)
+  {
+    testFailed++;
+    printf("It falied to allocate exact memory\n");
+  }
+  else if(ra == NULL && size !=0)
+  {
+    testFailed++;
+    printf("It falied to allocate exact memory\n");
+  }
+  testExecuted++;
+  return ra;
+}
+void checkRfree(void * block_ptr)
+{
+  rfree(block_ptr);
+  r_size_t size = rsize(block_ptr);
+  if(size != 0)
+  {
+    testFailed++;
+    printf("It falied to free memory\n");
+  }
+  testExecuted++;
+}*/
 
 // this code should run to completion with the output shown
 // you must think of additional cases of correct use and misuse for your testing
@@ -13,6 +85,27 @@ int main()
   char *ca1, *ca2, *ca3, *ca4;
   char *fail;
 
+  //buildRegion("hello", 1024);
+
+  //buildRegion("world", 0);
+  printf("here\n");
+  //buildRegion("world", 796);
+  //printf("here");
+  //checkRchoose("hello");
+  //checkRchoose("world");
+  /*ca1 = checkRalloc(sizeof(int) * 32);
+  ca2 = checkRalloc(256);
+  ca3 = checkRalloc(384);
+  ca4 = checkRalloc(384);
+  checkRfree(ca1);
+  ca1 = checkRalloc(384);
+  checkRfree(ca2);
+  ca1 = checkRalloc(384);
+  checkRchoose("world");
+  ca2 = checkRalloc(797);
+
+  */
+  rc = rinit("world", 0);
   rc = rinit("hello", 1024);
   assert(rc);
   rc = rinit("world", 0); // 800
