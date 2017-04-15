@@ -6,156 +6,161 @@
 #include "regions.h"
 static int testExecuted = 0;
 static int testFailed = 0;
-/*
-void buildRegion(char * region_name, r_size_t region_size)
+
+void testRinit( Boolean result , Boolean expected)
 {
-  Boolean rc;
-  if(strlen(region_name) > 0 && region_size > 0)
+  if(result == expected)
   {
-
-    rc = rinit(region_name, region_size);
-    assert(rc);
-    if(rc != true)
-    {
-
-      testFailed++;
-      printf("Failed to creat rgion with name = %s and size = %hu\n",region_name,region_size );
-    }
+    printf("Success: \n" );
   }
   else
   {
-    rc = rinit(region_name, region_size);
-    assert(!rc);
-    if(rc == true)
-      {
-          printf("here\n");
-        testFailed++;
-        printf("It created rgion with name = %s and size = %hu\n",region_name,region_size );
-      }
+      testFailed++;
+      printf("Failed: \n");
     }
-    testExecuted++;
+  testExecuted++;
 }
-void checkRchoose(char * region_name)
+void testRchoose(Boolean result, Boolean expected)
 {
-  const char * activeRegion = NULL;
-  rchoose(region_name);
-  activeRegion = rchosen();
-  if(strcmp(activeRegion,region_name) != 0)
+  //Boolean rc = rchoose(region_name);
+  //activeRegion = rchosen();
+  if(result == expected)
+  {
+    printf("Success: \n");
+  }
+  else
   {
     testFailed++;
-    printf("Chosen region is different then \"%s\"\n",region_name);
+    printf("Failed: \n");
   }
   testExecuted++;
 }
-void * checkRalloc(r_size_t block_size)
+void testRchosen(const char *expected)
 {
-  void * ra = ralloc(block_size);
-  r_size_t size = rsize(ra);
-  if(ra!= NULL && size != block_size)
+  const char * result = rchosen();
+  if(strcmp(result, expected) == 0)
   {
-    testFailed++;
-    printf("It falied to allocate exact memory\n");
+    printf("Success: \n");
   }
-  else if(ra == NULL && size !=0)
+  else
   {
     testFailed++;
-    printf("It falied to allocate exact memory\n");
+    printf("Failed: \n");
   }
   testExecuted++;
-  return ra;
 }
-void checkRfree(void * block_ptr)
+void testRalloc(r_size_t block_size, void * start_block)
 {
-  rfree(block_ptr);
+  r_size_t size = rsize(start_block);
+  r_size_t expected = (block_size + 7) - ((block_size + 7)%8);
+  if( size == expected)
+    {
+      printf("Success: \n" );
+    }
+  else
+    {
+    testFailed++;
+    printf("Failed: \n");
+    }
+  testExecuted++;
+}
+void testRfree(void * block_ptr)
+{
   r_size_t size = rsize(block_ptr);
-  if(size != 0)
+  if(size == 0)
+  {
+    printf("Success: \n" );
+  }
+  else
   {
     testFailed++;
-    printf("It falied to free memory\n");
+    printf("Failed: \n");
   }
   testExecuted++;
-}*/
-
+}
+void testRdestroy(const char *region_name)
+{
+  if(rchoose(region_name) == false)
+  {
+    printf("Success: \n" );
+  }
+  else
+  {
+    testFailed++;
+    printf("Failed to delete the region named : \" %s \"\n", region_name );
+  }
+  testExecuted++;
+}
 // this code should run to completion with the output shown
 // you must think of additional cases of correct use and misuse for your testing
 int main()
 {
   Boolean rc;
-  int *ia;
+  //int *ia;
   char *ca1, *ca2, *ca3, *ca4;
-  char *fail;
-
-  //buildRegion("hello", 1024);
-
-  //buildRegion("world", 0);
-  printf("here\n");
-  //buildRegion("world", 796);
-  //printf("here");
-  //checkRchoose("hello");
-  //checkRchoose("world");
-  /*ca1 = checkRalloc(sizeof(int) * 32);
-  ca2 = checkRalloc(256);
-  ca3 = checkRalloc(384);
-  ca4 = checkRalloc(384);
-  checkRfree(ca1);
-  ca1 = checkRalloc(384);
-  checkRfree(ca2);
-  ca1 = checkRalloc(384);
-  checkRchoose("world");
-  ca2 = checkRalloc(797);
-
-  */
-  rc = rinit("world", 0);
-  rc = rinit("hello", 1024);
-  assert(rc);
-  rc = rinit("world", 0); // 800
-  //printf("Chosen: %d\n", rc);
-  assert(!rc);
-
-  printf("Chosen: %s\n", rchosen()); // world
-
+  //char *fail;
+  rc = rinit("Computer Science",1024);
+  testRinit(rc, true); // rinit should return true
+  rc = rinit("Physics", 0);
+  testRinit(rc, false); // rinit should return false as size is 0
+  rc = rinit("Computer Science", 600);
+  testRinit(rc, false); // rinit should return false as "Computer Science" is already taken
+  rc = rinit("Physics", 796);
+  testRinit(rc, true);// rinit should return true
+  rc = rchoose("Physics");
+  testRchoose(rc, true); // rchoose should return true as there is a region named "Physics".
+  testRchosen("Physics"); //rchosen should return "Physics" as it is currently chosen.
+  rc = rchoose("PHYSICS");
+  testRchoose(rc, false); // rchoose should return false as there is no region named "PHYSICS"(case sensetive).
+  rc = rinit("", 800);
+  testRinit(rc, false);// rinit should return false as the name is a empty string.
+  rc = rchoose("Computer Science");
+  testRchoose(rc, true); // rchoose should return true as there is a region named "Computer Science".
+  testRchosen("Computer Science");//rchosen should return "Computer Science" as it is currently chosen.
   rc = rchoose("hello");
-  assert(rc);
-  printf("Chosen: %s\n", rchosen());
-  ia = ralloc(sizeof(int) * 32);
-  printf("Size: %d\n", rsize(ia)); // 128
-  ca1 = ralloc(256);
-  assert(NULL != ca1);
-  ca2 = ralloc(384);
-  assert(NULL != ca2);
-  fail = ralloc(384); // not enough memory
-  assert(NULL == fail);
+  testRchoose(rc, false); // there is no region named "hello"
+  ca1 = ralloc(sizeof(int) * 32); //passed
+  testRalloc(128, ca1);
+  ca2 = ralloc(256); //passed
+  testRalloc(256, ca2);
+  ca3 = ralloc(384); // passed
+  testRalloc(384, ca3);
+  ca4 = ralloc(384); //failed
+  testRalloc(0,ca4);
   rc = rfree(ca1);
-  assert(rc);
-  fail = ralloc(384); // not enough contiguous memory
-  assert(NULL == fail);
-  rc = rfree(ia);
-  assert(rc);
-  ca3 = ralloc(384); // now there's enough memory
-  assert (NULL != ca3);
+  testRfree(ca1);
+  ca1 = ralloc(384); // failed no enough contiguous memory
+  testRalloc(0, ca1);
+  rc = rfree(ca2);
+  testRfree(ca2);
+  ca1 = ralloc(384); // passed
+  testRalloc(384, ca1);
+  rc = rchoose("Physics");
+  testRchoose(rc, true);
+  ca2 = ralloc(797); // passed
+  testRalloc(800,ca2);
+  ca1 = ralloc(10);
+  testRalloc(0,ca1);
 
-  rc = rchoose("world");
-  assert(!rc);
-  ca4 = ralloc(796);
-  assert(NULL == ca4);
-  printf("Size: %d\n", rsize(ca4)); // 800
-  rc = rinit("world", 450); // 800
-  //printf("Chosen: %d\n", rc);
-  assert(rc);
+  rdump(); // Coputer Science & Physics
 
-  rdump(); // hello & world
-
-  rdestroy("hello");
-  //rdestroy("hello");
+  rdestroy("Physics");
+  testRdestroy("Physics"); // should destroy
 
   rc = rfree(ca4 + 24); // not the start of the block
   assert(!rc);
-  rc = rfree(ca4); // better!
+  testRfree(ca4 + 24);
+  printf("Chosen: %s\n", rchosen());
+  rc = rfree(ca4); // better! but ca4 is null
   assert(!rc);
+  testRfree(ca4);
 
-  rdestroy("world");
+  rdestroy("Computer Science");
 
   rdump(); // nothing
+  printf("Total test executed : %d\n", testExecuted);
+  printf("Test Failed: %d\n", testFailed);
+  printf("Test passed: %d\n",testExecuted - testFailed);
 
   fprintf(stderr,"\nEnd of processing.\n");
 

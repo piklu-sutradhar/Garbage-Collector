@@ -26,12 +26,24 @@ void validateLinkedlist()
     assert(top->next != NULL);
   }
 }
-
+void validateRalloc(Node * init, void * start_block, r_size_t block_size)
+{
+  r_size_t counter = 0;
+  assert(start_block != NULL);
+  assert(block_size > 0 && block_size <= init->size);
+  assert(start_block + block_size <= init->memoryRegion + init->size);
+  for(counter = 0; counter < block_size; counter++)
+  {
+    //*((char *)(start_block+counter)) = '0';
+    assert(*((char *)(start_block+counter)) == '0');
+  }
+}
 //function to add a new region
 Boolean insert(const char *region_name, r_size_t region_size)
 {
-
-    Boolean rc = true;
+  Boolean rc = false;
+  if(strlen(region_name)>0 && region_size >0)
+  {
     Node *newNode = NULL;
     assert(newNode == NULL);
     validateLinkedlist();
@@ -57,6 +69,7 @@ Boolean insert(const char *region_name, r_size_t region_size)
             {
                 newNode->blocks = NULL;
                 numNodes++;
+                rc = true;
                 validateLinkedlist();
             }
             else
@@ -67,33 +80,37 @@ Boolean insert(const char *region_name, r_size_t region_size)
                 free(newNode);
                 newNode = NULL;
                 assert(newNode == NULL);
-                rc = false;
                 assert(!rc);
             }
         }
     }
-    return rc;
+  }
+  return rc;
 }
 Boolean search(char const *const target)
 {
   validateLinkedlist();
     Boolean found = false;
-    Node *curr = top;
     assert(target != NULL);
-    while (curr != NULL && !found)
+    if(strlen(target)>0)
     {
-      assert(curr != NULL);
-        if (strcmp(target, curr->name) == 0)
-        {
-          assert(strlen(target) == strlen(curr->name));
-          found = true;
-          assert(found == true);
-        }
-        else
-        {
-            curr = curr->next;
-        }
+      Node *curr = top;
+      while (curr != NULL && !found)
+      {
+        assert(curr != NULL);
+          if (strcmp(target, curr->name) == 0)
+          {
+            assert(strlen(target) == strlen(curr->name));
+            found = true;
+            assert(found == true);
+          }
+          else
+          {
+              curr = curr->next;
+          }
+      }
     }
+
     return found;
 }
 // starts a list traversal by getting the data at top
@@ -188,10 +205,12 @@ void *find_block(Node *init, r_size_t block_size)
   assert(inMemory != NULL);
   void *nextFree = init->memoryRegion;
   assert(nextFree != NULL);
+
   while(counter < init->size && hasFree < block_size)
   {
     if(current != NULL && inMemory + counter == current->start)
     {
+
       counter = counter + current->size;
       assert(counter <= init->size);
       nextFree = nextFree + current->size;
@@ -201,6 +220,7 @@ void *find_block(Node *init, r_size_t block_size)
     }
     else
     {
+
       assert(counter <= init->size);
       counter++;
       assert(hasFree < block_size);
@@ -208,18 +228,19 @@ void *find_block(Node *init, r_size_t block_size)
       assert(hasFree <= block_size);
     }
   }
+
   if(hasFree == block_size)
   {
     assert(hasFree == block_size);
     for(counter = 0; counter < block_size; counter++)
     {
       *((char *)(nextFree+counter)) = '0';
-      assert(*((char *)(nextFree+counter)) == '0');
+      //assert(*((char *)(nextFree+counter)) == '0');
     }
     start_block = nextFree;
     assert(start_block != NULL);
+    validateRalloc(init,start_block,block_size);
     add(&init->blocks, start_block, block_size);
-    validateList(init->blocks);
     }
   return start_block;
 }

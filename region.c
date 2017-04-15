@@ -22,6 +22,13 @@ static Node *curr = NULL;
 //-------------------------------------------------------------------------------------
 // FUNCTIONS
 //-------------------------------------------------------------------------------------
+void validateCurrent(const char *region_name)
+{
+  if(firstNode() != NULL)
+  {
+    assert(strcmp(region_name, curr->name) == 0);
+  }
+}
 Boolean rinit(const char *region_name, r_size_t region_size)
 {
   assert(region_name != NULL);
@@ -46,8 +53,8 @@ Boolean rinit(const char *region_name, r_size_t region_size)
           }
           else
           {
-              printf("Name \"%s\" is already taken \n", region_name);
-              curr = NULL;
+              //printf("Name \"%s\" is already taken \n", region_name);
+              //curr = NULL;
               rc = false;
           }
       }
@@ -60,21 +67,19 @@ Boolean rinit(const char *region_name, r_size_t region_size)
 Boolean rchoose(const char *region_name)
 {
   Boolean rc = false;
-  if(region_name != NULL)
+  if(region_name != NULL && strlen(region_name)>0)
   {
     assert(region_name != NULL);
-    curr = firstNode();
-    while (curr != NULL && strcmp(curr->name, region_name) != 0)
+    Node * chosen = firstNode();
+    while (chosen != NULL && strcmp(chosen->name, region_name) != 0)
     {
-      curr = nextNode();
+      chosen = nextNode();
     }
-    if (curr != NULL)
+    if (chosen != NULL)
     {
       rc = true;
-    }
-    else
-    {
-      curr = firstNode();
+      curr = chosen;
+      validateCurrent(region_name);
     }
   }
   return rc;
@@ -98,6 +103,7 @@ void *ralloc(r_size_t block_size)
     assert(curr != NULL);
     block_start = find_block(curr, block_size);
   }
+
    return block_start;
 }
 

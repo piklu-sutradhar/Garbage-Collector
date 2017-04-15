@@ -7,7 +7,7 @@
 
 static int numBlocks = 0;
 //Invariant function.
-void validateList(Tracker * blocks)
+/*void validateList(Tracker * blocks)
 {
   Tracker *current = blocks;
   if(numBlocks == 0)
@@ -22,7 +22,8 @@ void validateList(Tracker * blocks)
   {
     assert(current->next != NULL);
   }
-}
+}*/
+
 //Invariant to check if the list in order
 void isInOrder(Tracker *list)
 {
@@ -47,7 +48,7 @@ void add( Tracker **blocks, void *start, r_size_t block_size)
   assert(NULL != start);
   assert(block_size > 0);
   Tracker *curr = *blocks;
-  validateList(curr);
+  //validateList(*blocks);
   Tracker *prev = NULL;
   Tracker *new = (Tracker *) malloc(sizeof(Tracker));
   assert(new != NULL);
@@ -72,7 +73,7 @@ void add( Tracker **blocks, void *start, r_size_t block_size)
     assert(new->next == *blocks);
     *blocks = new;
     numBlocks++;
-    validateList(*blocks);
+    //validateList(*blocks);
     isInOrder(*blocks);
     assert(*blocks = new);
   }
@@ -83,7 +84,8 @@ void add( Tracker **blocks, void *start, r_size_t block_size)
     new->next = curr;
     prev->next = new;
     numBlocks++;
-    validateList(*blocks);
+    isInOrder(*blocks);
+    //validateList(*blocks);
     assert(prev->next != NULL);
   }
 }
@@ -95,7 +97,7 @@ Boolean delete_block( Tracker **list, void *start){
     Tracker * prev = NULL;
     if(curr != NULL)
     {
-      validateList(curr);
+      //validateList(curr);
       assert(curr != NULL);
 
       //travel through the block list while find the block with same pointer.
@@ -115,7 +117,7 @@ Boolean delete_block( Tracker **list, void *start){
       numBlocks--;
       curr = NULL;
       assert(curr == NULL);
-      validateList(*list);
+      //validateList(*list);
     }
     else
     {
@@ -129,7 +131,7 @@ Boolean delete_block( Tracker **list, void *start){
         numBlocks--;
         curr = NULL;
         assert(curr == NULL);
-        validateList(*list);
+        //validateList(*list);
       }
     }
   }
@@ -141,7 +143,7 @@ r_size_t blockSize(Tracker *list, void *start)
 {
   r_size_t size = 0;
   Tracker *curr = list;
-  validateList(curr);
+  //validateList(curr);
   assert(curr != NULL);
   while(curr != NULL && curr->start != start)
   {
