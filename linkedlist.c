@@ -26,6 +26,8 @@ void validateLinkedlist()
     assert(top->next != NULL);
   }
 }
+
+//check if ralloc works properly
 void validateRalloc(Node * init, void * start_block, r_size_t block_size)
 {
   r_size_t counter = 0;
@@ -34,7 +36,6 @@ void validateRalloc(Node * init, void * start_block, r_size_t block_size)
   assert(start_block + block_size <= init->memoryRegion + init->size);
   for(counter = 0; counter < block_size; counter++)
   {
-    //*((char *)(start_block+counter)) = '0';
     assert(*((char *)(start_block+counter)) == '0');
   }
 }
@@ -46,14 +47,17 @@ Boolean insert(const char *region_name, r_size_t region_size)
   {
     Node *newNode = NULL;
     assert(newNode == NULL);
+
     validateLinkedlist();
-    newNode = (Node *)malloc(sizeof(Node));
+
+    newNode = (Node *)malloc(sizeof(Node)); //allocating memory to hold a region..
     assert(newNode);
     if (newNode)
     {
         newNode->next = top;
         top = newNode;
         assert(top != NULL);
+
         newNode->name = (char *)malloc(strlen(region_name) + 1);
         assert(newNode->name != NULL);
         if (newNode->name != NULL)
@@ -63,6 +67,7 @@ Boolean insert(const char *region_name, r_size_t region_size)
             assert(strlen(region_name) == strlen(newNode->name));
             newNode->size = region_size;
             assert(newNode->size == region_size);
+
             newNode->memoryRegion = malloc(region_size);
             assert(newNode->memoryRegion != NULL);
             if (newNode->memoryRegion != NULL)
@@ -87,6 +92,8 @@ Boolean insert(const char *region_name, r_size_t region_size)
   }
   return rc;
 }
+
+//searching for a region with the passed name.
 Boolean search(char const *const target)
 {
   validateLinkedlist();
@@ -125,7 +132,7 @@ Node *firstNode()
     return top;
 }
 
-// gets the data at the current traversal node and increments the traversal
+// gets the current traversal node and increments the traversal
 Node *nextNode()
 {
   validateLinkedlist();
@@ -138,6 +145,8 @@ Node *nextNode()
     }
     return current;
 }
+
+//deleting a region..
 Boolean delete (char const *const target)
 {
   validateLinkedlist();
@@ -151,9 +160,9 @@ Boolean delete (char const *const target)
         curr = curr->next;
     }
 
-    if (curr != NULL)
+    if (curr != NULL) //we need to delete that region
     {
-        if (prev != NULL)
+        if (prev != NULL) // region is somewhere in the list but not the firstNode
         {
             prev->next = curr->next;
             numNodes--;
@@ -161,10 +170,12 @@ Boolean delete (char const *const target)
         }
         else
         {
+          //we need to delete the first node
           top = curr->next;
           numNodes--;
           validateLinkedlist();
         }
+        //freeing allocated memory..
         free(curr->name);
         curr->name = NULL;
         assert(curr->name == NULL);
