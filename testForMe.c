@@ -10,13 +10,14 @@ static int testFailed = 0;
 static char *names[5] = {"Computer Science","Physics","Chemistry","Biology","Arts",};
 static int sizes[5] = {1024,777,85,560,24};
 
+//Function to test rinit
 void testRinit(const char * region_name, r_size_t region_size)
 {
   Boolean rc;
-    if(rchoose(region_name) == false)
+    if(rchoose(region_name) == false) //there is no region with the same name
     {
       rc = rinit(region_name, region_size);
-      if(region_name != NULL && region_size > 0)
+      if(region_name != NULL && region_size > 0) //it should create a region
       {
         if(rc != true)
         {
@@ -26,7 +27,7 @@ void testRinit(const char * region_name, r_size_t region_size)
       }
       else
       {
-        if(rc == true)
+        if(rc == true) // it should not create a region
         {
           testFailed++;
           printf("%s : %s\n", "Created an unexpected region", region_name);
@@ -35,7 +36,7 @@ void testRinit(const char * region_name, r_size_t region_size)
     }
     else
     {
-      rc = rinit(region_name, region_size);
+      rc = rinit(region_name, region_size); //it should not create a region
       if(rc == true)
       {
         testFailed++;
@@ -44,11 +45,13 @@ void testRinit(const char * region_name, r_size_t region_size)
     }
     testExecuted++;
 }
+
+//function for testing rchoose
 void testRchoose(const char * region_name, Boolean result)
 {
-  if(result == true)
+  if(result == true) //if rchoose returns true
   {
-    if(strcmp(region_name, rchosen()) != 0)
+    if(strcmp(region_name, rchosen()) != 0) //the name should be same as rchosen()
     {
       testFailed++;
       printf("%s\n","Chosen name is different" );
@@ -57,11 +60,12 @@ void testRchoose(const char * region_name, Boolean result)
   testExecuted++;
 }
 
+//function to test ralloc
 void testRalloc(r_size_t block_size, void * start_block)
 {
   r_size_t size = rsize(start_block);
   r_size_t expected = (block_size + 7) - ((block_size + 7)%8);
-  if(start_block != NULL)
+  if(start_block != NULL) //if ralloc does not return NULL. a block should be created
   {
     if( size != expected)
       {
@@ -69,7 +73,7 @@ void testRalloc(r_size_t block_size, void * start_block)
       printf("Failed to allocate a block of proper size \n");
       }
   }
-  else
+  else //if ralloc returns NULL there should not be any region and rsize should return 0
   {
     if( size != 0)
     {
@@ -80,9 +84,11 @@ void testRalloc(r_size_t block_size, void * start_block)
   testExecuted++;
 }
 
+//function to test rfree
 void testRfree(void * block_ptr)
 {
-  r_size_t size = rsize(block_ptr);
+  r_size_t size = rsize(block_ptr); //after freeing a block rsize should return 0,
+        //even if the pointer is not present in the list rfree should Failed and rsize should return 0.
   if(size != 0)
   {
     testFailed++;
@@ -90,10 +96,11 @@ void testRfree(void * block_ptr)
   }
   testExecuted++;
 }
+
+//test rdestroy
 void testRdestroy(const char *region_name)
 {
-  //rdestroy(region_name);
-    if(rchoose(region_name) == true)
+    if(rchoose(region_name) == true) //after destroying a region rchoose should return false
     {
       testFailed++;
       printf("Failed to delete the region named : \" %s \"\n", region_name );
@@ -160,7 +167,7 @@ int main()
   rdestroy(names[3]);
   testRdestroy(names[3]);
 
-  rdump();
+  rdump(); //three regions
 
   rdestroy("Bad Name");
   testRdestroy("Bad Name");
