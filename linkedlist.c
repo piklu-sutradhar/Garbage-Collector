@@ -42,7 +42,7 @@ void validateRalloc(Node * init, void * start_block, r_size_t block_size)
 Boolean insert(const char *region_name, r_size_t region_size)
 {
   Boolean rc = false;
-  if(strlen(region_name)>0 && region_size >0)
+  if(region_name != NULL && region_size >0)
   {
     Node *newNode = NULL;
     assert(newNode == NULL);
@@ -208,12 +208,12 @@ void *find_block(Node *init, r_size_t block_size)
 
   while(counter < init->size && hasFree < block_size)
   {
-    if(current != NULL && inMemory + counter == current->start)
+    if(current != NULL && (inMemory + counter == current->start))
     {
 
       counter = counter + current->size;
       assert(counter <= init->size);
-      nextFree = nextFree + current->size;
+      nextFree = inMemory + counter;
       assert(nextFree <= (init->memoryRegion + init->size));
       current = current->next;
       hasFree = 0;
@@ -229,7 +229,7 @@ void *find_block(Node *init, r_size_t block_size)
     }
   }
 
-  if(hasFree == block_size)
+  if(hasFree == block_size && (nextFree + block_size <= init->memoryRegion + init->size))
   {
     assert(hasFree == block_size);
     for(counter = 0; counter < block_size; counter++)
@@ -257,15 +257,15 @@ void printBlock(Node const *const init)
     assert(current->size > 0);
     sum += current->size;
     numBlocks++;
-    printf("|  Block: %d\n",numBlocks);
-    printf("|  ------------------------------\n");
-    printf("|  | Address: %p\n", current->start);
-    printf("|  | Block Size: %d\n", current->size);
-    printf("|  ------------------------------\n");
+    printf(" |  Block: %d\n",numBlocks);
+    printf(" |  ------------------------------\n");
+    printf(" |  | Address: %p\n", current->start);
+    printf(" |  | Block Size: %d\n", current->size);
+    printf(" |  ------------------------------\n");
     current = current->next;
   }
   percentage = (double)sum / (double)init->size * 100;
-  printf("| %.2f%c percent memory is free\n", 100.00 - percentage,37);
+  printf(" | %.2f%c percent memory is free\n", 100.00 - percentage,37);
 }
 r_size_t currSize(Node *init, void *block_ptr)
 {

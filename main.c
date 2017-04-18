@@ -9,15 +9,31 @@ static int testFailed = 0;
 
 void testRinit( Boolean result , Boolean expected)
 {
-  if(result == expected)
+  int i = 0;
+  char *names[10] = {"Computer Science","Physics","Hello","world",
+  NULL,"Chemistry","Biology","Arts","New region","Another region"};
+  int sizes[10] = {1024,777,0,-85,560,600,160, 200,24,10};
+
+  for (i =0; i < 10; i++)
   {
-    printf("Success: \n" );
-  }
-  else
-  {
-      testFailed++;
-      printf("Failed: \n");
+    Boolean rc = rinit(names[i], sizes[i]);
+    if(names != NULL && sizes > 0 )
+    {
+      if(rc != true)
+      {
+        testFailed++;
+        printf("%s\n", "Failed to create region");
+      }
     }
+    else
+    {
+      if(rc == true)
+      {
+        testFailed++;
+        printf("%s\n", "Created an unexpected region");
+      }
+    }
+  }
   testExecuted++;
 }
 void testRchoose(Boolean result, Boolean expected)
@@ -53,25 +69,28 @@ void testRalloc(r_size_t block_size, void * start_block)
 {
   r_size_t size = rsize(start_block);
   r_size_t expected = (block_size + 7) - ((block_size + 7)%8);
-  if( size == expected)
-    {
-      printf("Success: \n" );
-    }
+  if(start_block != NULL)
+  {
+    if( size != expected)
+      {
+      testFailed++;
+      printf("Failed to allocate a block of proper size \n");
+      }
+  }
   else
+  {
+    if( size != 0)
     {
-    testFailed++;
-    printf("Failed: \n");
+      testFailed++;
+      printf("%s\n", "Allocated a block with NULL pointer" );
     }
+  }
   testExecuted++;
 }
 void testRfree(void * block_ptr)
 {
   r_size_t size = rsize(block_ptr);
-  if(size == 0)
-  {
-    printf("Success: \n" );
-  }
-  else
+  if(size != 0)
   {
     testFailed++;
     printf("Failed: \n");
@@ -81,10 +100,6 @@ void testRfree(void * block_ptr)
 void testRdestroy(const char *region_name)
 {
   if(rchoose(region_name) == false)
-  {
-    printf("Success: \n" );
-  }
-  else
   {
     testFailed++;
     printf("Failed to delete the region named : \" %s \"\n", region_name );
@@ -96,9 +111,10 @@ void testRdestroy(const char *region_name)
 int main()
 {
   Boolean rc;
-  //int *ia;
+  int *ia;
   char *ca1, *ca2, *ca3, *ca4;
   //char *fail;
+  /*
   rc = rinit("Computer Science",1024);
   testRinit(rc, true); // rinit should return true
   rc = rinit("Physics", 0);
@@ -113,7 +129,8 @@ int main()
   rc = rchoose("PHYSICS");
   testRchoose(rc, false); // rchoose should return false as there is no region named "PHYSICS"(case sensetive).
   rc = rinit("", 800);
-  testRinit(rc, false);// rinit should return false as the name is a empty string.
+  testRinit(rc, true);// rinit should return false as the name is a empty string.
+*/
   rc = rchoose("Computer Science");
   testRchoose(rc, true); // rchoose should return true as there is a region named "Computer Science".
   testRchosen("Computer Science");//rchosen should return "Computer Science" as it is currently chosen.
@@ -125,8 +142,8 @@ int main()
   testRalloc(256, ca2);
   ca3 = ralloc(384); // passed
   testRalloc(384, ca3);
-  ca4 = ralloc(384); //failed
-  testRalloc(0,ca4);
+  ia = ralloc(384); //failed
+  testRalloc(0,ia);
   rc = rfree(ca1);
   testRfree(ca1);
   ca1 = ralloc(384); // failed no enough contiguous memory

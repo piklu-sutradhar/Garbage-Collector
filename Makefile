@@ -1,10 +1,10 @@
 CC = clang
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -DNDEBUG -lm
 
 PROG = main
 
 OBJDIR = objects
-OBJS = $(OBJDIR)/main.o $(OBJDIR)/linkedlist.o $(OBJDIR)/region.o $(OBJDIR)/tracker.o
+OBJS = $(OBJDIR)/testForMe.o $(OBJDIR)/linkedlist.o $(OBJDIR)/region.o $(OBJDIR)/tracker.o
 
 # ... and in the darkness bind them (er, link them)
 $(PROG): $(OBJS) $(OBJDIR)

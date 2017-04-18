@@ -144,7 +144,6 @@ r_size_t blockSize(Tracker *list, void *start)
   r_size_t size = 0;
   Tracker *curr = list;
   //validateList(curr);
-  assert(curr != NULL);
   while(curr != NULL && curr->start != start)
   {
     assert(curr != NULL);

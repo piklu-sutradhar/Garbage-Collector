@@ -31,10 +31,10 @@ void validateCurrent(const char *region_name)
 }
 Boolean rinit(const char *region_name, r_size_t region_size)
 {
-  assert(region_name != NULL);
   Boolean rc = false;
-  if(strlen(region_name) > 0 && region_size >0)
+  if( region_name != NULL && region_size >0)
   {
+    assert(region_name != NULL);
     assert(region_size > 0 );
       if (region_size > 0)
       {
@@ -67,7 +67,7 @@ Boolean rinit(const char *region_name, r_size_t region_size)
 Boolean rchoose(const char *region_name)
 {
   Boolean rc = false;
-  if(region_name != NULL && strlen(region_name)>0)
+  if(region_name != NULL)
   {
     assert(region_name != NULL);
     Node * chosen = firstNode();
@@ -127,37 +127,55 @@ Boolean rfree(void *block_ptr)
 }
 void rdestroy(const char *region_name)
 {
-  if(curr != NULL && strcmp(region_name, curr->name) ==0)
+  if(region_name != NULL)
   {
-    if(delete (region_name) == true)
+    if(curr != NULL && strcmp(region_name, curr->name) ==0)
     {
-      curr = firstNode();
+      if(delete (region_name) == true)
+      {
+        curr = firstNode();
+      }
+      else
+      {
+        printf("There is an error to delete Node with name \"%s\"\n", region_name);
+      }
     }
     else
     {
-      printf("There is an error to delete Node with name \"%s\"\n", region_name);
-    }
-  }
-  else
-  {
-    if(delete (region_name) == false)
-    {
-      printf("There is an error to delete Node with name \"%s\"\n", region_name);
+      if(delete (region_name) == false)
+      {
+        if(search(region_name) == true)
+        {
+            printf("There is an error to delete Node with name \"%s\"\n", region_name);
+        }
+      }
     }
   }
 }
 void rdump()
 {
     Node *toPrint= firstNode();
+  if(toPrint != NULL)
+  {
+    printf("==============================================\n");
+    printf("============ Print All Regions ===============\n");
+    printf("==============================================\n");
     while (toPrint != NULL)
     {
       assert(toPrint != NULL);
-        printf("*********************************************\n");
-        printf("| The Name of the region: %s                \n", toPrint->name);
-        printf("| The buffer pointer: %p                    \n", toPrint->memoryRegion);
-        printf("| The size of the buffer: %hu               \n", toPrint->size);
+        printf(" *********************************************\n");
+        printf(" | The Name of the region: \"%s\"             \n", toPrint->name);
+        printf(" | The buffer pointer: %p                    \n", toPrint->memoryRegion);
+        printf(" | The size of the buffer: %hu               \n", toPrint->size);
         printBlock(toPrint);
-        printf("*********************************************\n\n");
+        printf(" *********************************************\n\n");
         toPrint= nextNode();
     }
+  }
+  else
+  {
+    printf("==============================================\n");
+    printf("============ The list is empty ===============\n");
+    printf("==============================================\n");
+  }
 }
